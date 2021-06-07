@@ -6,7 +6,7 @@ Criado por Gabriel Pachêco Milhomem:
 * [Github](https://github.com/gpm22);
 * :email: [Email](gabrielpacmil2@gmail.com);
 
-Projeto disponível em: LINK DO GITHUB;
+Projeto disponível em: https://github.com/gpm22/API_Veiculos;
 
 ## Descrição
 
@@ -128,13 +128,13 @@ A seguir estão os códigos dessas classes:
 
 * **Owner.java**
   <details>
-
     import javax.persistence.*;
+
     import java.util.List;
+
     @Entity
     @Table(name = "owner")
     public class Owner {
-
         private long id;
         private String name;
         private String email;
@@ -213,8 +213,8 @@ A seguir estão os códigos dessas classes:
             this.vehicles.add(vehicle);
         }
     }
-
   </details>
+
 * **Vehicle.java**
   <details>
     import javax.persistence.*;
@@ -335,17 +335,15 @@ A seguir estão os códigos dessas interfaces:
 
   <details>
     import com.github.gpm22.API_Veiculos.Entities.Owner;
+
     import org.springframework.data.jpa.repository.JpaRepository;
     import org.springframework.data.jpa.repository.Query;
 
     public interface OwnerRepository extends JpaRepository<Owner, Long> {
-
         @Query(value = "select o from Owner o where o.cpf = ?1")
         Owner findByCpf(final String cpf);
-
         @Query(value = "select o from Owner o where o.email = ?1")
         Owner findByEmail(final String email);
-
     }
   </details>
 
@@ -404,29 +402,29 @@ Essas classes são:
    * Código:
 
      <details>
-       import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+         import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-       @JsonIgnoreProperties(ignoreUnknown = true)
-       public class Brand {
-           private String nome;
-           private String codigo;
+         @JsonIgnoreProperties(ignoreUnknown = true)
+         public class Brand {
+             private String nome;
+             private String codigo;
 
-           public String getNome() {
-               return nome;
-           }
+             public String getNome() {
+                 return nome;
+             }
 
-           public void setNome(String nome) {
-               this.nome = nome;
-           }
+             public void setNome(String nome) {
+                 this.nome = nome;
+             }
 
-           public String getCodigo() {
-               return codigo;
-           }
+             public String getCodigo() {
+                 return codigo;
+             }
 
-           public void setCodigo(String codigo) {
-               this.codigo = codigo;
-           }
-       }
+             public void setCodigo(String codigo) {
+                 this.codigo = codigo;
+             }
+         }
      </details>
 
 2. `ModelYear`
@@ -435,6 +433,32 @@ Essas classes são:
    * Possui os atributos anos, que é da classe `Year`,  e modelos, que é da classe `Model`;
    * É utilizada pelo método `getModelList` da classe *Client*;
    * Código:
+      <details>
+            import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            public class ModelYear {
+                private Year[] anos;
+                private Model[] modelos;
+
+                public Year[] getAnos() {
+                    return anos;
+                }
+
+                public void setAnos(Year[] anos) {
+                    this.anos = anos;
+                }
+
+                public Model[] getModelos() {
+                    return modelos;
+                }
+
+                public void setModelos(Model[] modelos) {
+                    this.modelos = modelos;
+                }
+            }
+
+      </details>
 
 
 3. `Model`
@@ -443,29 +467,29 @@ Essas classes são:
    * Possui os atributos nome e codigo;
    * Código:
       <details>
-        import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+            import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public class Model {
-            private String nome;
-            private String codigo;
+            @JsonIgnoreProperties(ignoreUnknown = true)
+            public class Model {
+                private String nome;
+                private String codigo;
 
-            public String getNome() {
-                return nome;
+                public String getNome() {
+                    return nome;
+                }
+
+                public void setNome(String nome) {
+                    this.nome = nome;
+                }
+
+                public String getCodigo() {
+                    return codigo;
+                }
+
+                public void setCodigo(String codigo) {
+                    this.codigo = codigo;
+                }
             }
-
-            public void setNome(String nome) {
-                this.nome = nome;
-            }
-
-            public String getCodigo() {
-                return codigo;
-            }
-
-            public void setCodigo(String codigo) {
-                this.codigo = codigo;
-            }
-        }
       </details>
 
 4. `Year`
@@ -478,29 +502,29 @@ Essas classes são:
    * É utilizada pelo método `getYearlList` da classe *Client*;
    * Código:
       <details>
-        import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+          import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public class Year {
-            private String nome;
-            private String codigo;
+          @JsonIgnoreProperties(ignoreUnknown = true)
+          public class Year {
+              private String nome;
+              private String codigo;
 
-            public String getNome() {
-                return nome;
-            }
+              public String getNome() {
+                  return nome;
+              }
 
-            public void setNome(String nome) {
-                this.nome = nome;
-            }
+              public void setNome(String nome) {
+                  this.nome = nome;
+              }
 
-            public String getCodigo() {
-                return codigo;
-            }
+              public String getCodigo() {
+                  return codigo;
+              }
 
-            public void setCodigo(String codigo) {
-                this.codigo = codigo;
-            }
-        }
+              public void setCodigo(String codigo) {
+                  this.codigo = codigo;
+              }
+          }
       </details>
 
 5. `Price`
@@ -512,22 +536,22 @@ Essas classes são:
    * Código:
 
       <details>
-        import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-        import com.fasterxml.jackson.annotation.JsonProperty;
+          import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+          import com.fasterxml.jackson.annotation.JsonProperty;
 
-        @JsonIgnoreProperties(ignoreUnknown = true)
-        public class Price {
-            private String valor;
+          @JsonIgnoreProperties(ignoreUnknown = true)
+          public class Price {
+              private String valor;
 
-            public String getValor() {
-                return valor;
-            }
+              public String getValor() {
+                  return valor;
+              }
 
-            @JsonProperty("Valor")
-            public void setValor(String Valor) {
-                this.valor = Valor;
-            }
-        }
+              @JsonProperty("Valor")
+              public void setValor(String Valor) {
+                  this.valor = Valor;
+              }
+          }
       </details>
 
 Agora assim os métodos para realizar as requisições *GET* podem ser implementadas na classe `ApiVeiculosClient` seguindo as seguintes diretrizes:
@@ -558,8 +582,11 @@ Agora assim os métodos para realizar as requisições *GET* podem ser implement
 
   <details>
     import com.fasterxml.jackson.databind.ObjectMapper;
+
     import com.github.gpm22.API_Veiculos.Client.Classes.*;
+
     import org.springframework.http.HttpMethod;
+
     import org.springframework.web.reactive.function.client.WebClient;
     import java.util.Arrays;
     import java.util.stream.Stream;
@@ -804,6 +831,7 @@ Existem três métodos na classe *Controller* aqui utilizada, sendo que cada uma
     import com.github.gpm22.API_Veiculos.Entities.Vehicle;
     import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
     import com.github.gpm22.API_Veiculos.Repositories.VehicleRepository;
+
     import com.github.gpm22.API_Veiculos.Services.ApiVeiculosService;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.HttpStatus;
@@ -825,7 +853,6 @@ Existem três métodos na classe *Controller* aqui utilizada, sendo que cada uma
         private ApiVeiculosService service;
 
         private ApiVeiculosClient client = new ApiVeiculosClient();
-
 
         @PostMapping("/usuario")
         public ResponseEntity createOwner(@RequestBody Owner owner) {
@@ -948,9 +975,7 @@ Existem três métodos na classe *Controller* aqui utilizada, sendo que cada uma
                         .body("Não existe usuário com o email ou cpf: " + emailOuCpf);
             }
         }
-
     }
-
 
   </details>
 
