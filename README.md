@@ -2,7 +2,7 @@
 
 ## Descrição
 
-API REST para controlar véiculos de usuários. Basicamente trata-se de um sistema onde usuários podem se cadastrar e também cadastrar uma lista de veículos, sendo que o usuário pode realizar a leitura da própria lista de véiculos.
+API REST para controlar veículos de usuários. Basicamente trata-se de um sistema onde usuários podem se cadastrar e também cadastrar uma lista de veículos, sendo que o usuário pode realizar a leitura da própria lista de veículos.
 
 O cadastro do usuário é realizado informando obrigatoriamento as seguintes informações:
 
@@ -29,12 +29,12 @@ Através do último dígito do ano do veículo a API irá guardar no banco de da
 4. Final 6-7: quinta-feira - 5
 5. Final 8-9: sexta-feira - 6
 
-Ao se solicitar a lista de veículos serão retornadas as informações do usuário junto da lista de véiculos, sendo que as informações dos veículos a serem mostradas são as informações fornecidas durante o cadastro, o dia da semana em que o rodízio está ativo, se o rodízio está ativo no dia em que o retorno da lista foi requisitado e o preço do veículo que consta na tabela FIPE.
+Ao se solicitar a lista de veículos serão retornadas as informações do usuário junto da lista de veículos, sendo que as informações dos veículos a serem mostradas são as informações fornecidas durante o cadastro, o dia da semana em que o rodízio está ativo, se o rodízio está ativo no dia em que o retorno da lista foi requisitado e o preço do veículo que consta na tabela FIPE.
 
 Desse modo, essa API consiste em 3 endpoints:
 
 1. Cadastro de usuários;
-2. Cadastro de véiculos através do CPF ou email do usuário;
+2. Cadastro de veículos através do CPF ou email do usuário;
 3. Retorno da lista de veículos através do CPF ou email do usuário;
 
 O realizamento correto dos cadastros irá retornar *Status 201*, enquanto que a falha no cadastro retornará *Status 400*. Se a solicitação da lista de veículos for correta, o *Status 200* será retornado, enquanto irá retornar o *Status 404* se algo der errado. Em conjunto aos *status* de erro, mensagens explicando o que deu errado também serão mostradas.
@@ -281,7 +281,7 @@ Todos os veículos do persistente **Ash** foram requisitados através de uma req
 }
 ```
 
-Fazer a requisição para o CPF irá resultar na mesma respostas, como pode ser visto ao fazer uma requisição *GET* para 
+Fazer a requisição para o CPF irá resultar na mesma respostas, como pode ser visto ao fazer uma requisição *GET* para
 
 ```json
 {
