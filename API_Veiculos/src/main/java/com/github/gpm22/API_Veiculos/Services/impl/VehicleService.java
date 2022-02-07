@@ -3,7 +3,6 @@ package com.github.gpm22.API_Veiculos.Services.impl;
 import com.github.gpm22.API_Veiculos.Client.ApiFipeClient;
 import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
-import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
 import com.github.gpm22.API_Veiculos.Repositories.VehicleRepository;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
 import com.github.gpm22.API_Veiculos.Utils.Commons;
@@ -20,7 +19,7 @@ public class VehicleService implements IVehicleService {
     private VehicleRepository vehicleRepository;
 
     @Autowired
-    private OwnerRepository ownerRepository;
+    private OwnerService ownerService;
 
     @Autowired
     private ApiFipeClient apiFipeClient;
@@ -28,7 +27,7 @@ public class VehicleService implements IVehicleService {
     @Override
     public Vehicle save(String emailOuCpf, Vehicle vehicle) throws IllegalArgumentException {
 
-        Owner owner = ownerRepository.findByCpfOrEmail(emailOuCpf, emailOuCpf);
+        Owner owner = ownerService.getByCpfOrEmail(emailOuCpf);
 
         if (owner == null) {
             throw new IllegalArgumentException("Não existe usuário com o email ou cpf: " + emailOuCpf);
@@ -50,12 +49,25 @@ public class VehicleService implements IVehicleService {
             throw new IllegalArgumentException("Parâmetro tipo não pode ser vazio!\n Deve ser: carros, motos ou caminhoes.");
         }
 
-        vehicle.setRotationDay(Commons.rotationDay(vehicle.getYear()));
-        vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
-        vehicle.setPrice(this.getFipePrice(vehicle));
-        owner.addVehicle(vehicle);
+        Vehicle newVehicle = vehicleRepository.findByModelAndYear(vehicle.getModel(), vehicle.getYear());
 
-        return vehicleRepository.save(vehicle);
+        if(newVehicle == null){
+            vehicle.setRotationDay(Commons.rotationDay(vehicle.getYear()));
+            vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
+            vehicle.setPrice(this.getFipePrice(vehicle));
+            owner.addVehicle(vehicle);
+
+            return vehicleRepository.save(vehicle);
+        }
+
+        newVehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
+
+        owner.addVehicle(newVehicle);
+
+        ownerService.update(owner);
+
+        return newVehicle;
+
     }
 
     private String getFipePrice(Vehicle vehicle) {
@@ -82,7 +94,7 @@ public class VehicleService implements IVehicleService {
 
     @Override
     public Set<Vehicle> getVehiclesByOwner(String emailOuCpf) {
-        Optional<Owner> optional = Optional.ofNullable(ownerRepository.findByCpfOrEmail(emailOuCpf, emailOuCpf));
+        Optional<Owner> optional = Optional.ofNullable(ownerService.getByCpfOrEmail(emailOuCpf));
 
         if (optional.isPresent()) {
             Set<Vehicle> vehicles = optional.get().getVehicles();
