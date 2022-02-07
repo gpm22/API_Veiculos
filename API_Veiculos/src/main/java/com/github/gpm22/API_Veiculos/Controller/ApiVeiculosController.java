@@ -36,6 +36,20 @@ public class ApiVeiculosController {
         }
     }
 
+    @GetMapping("/usuario/{email_ou_cpf}")
+    public ResponseEntity getOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf) {
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(ownerService.getByCpfOrEmail(emailOuCpf));
+
+        } catch (IllegalArgumentException e){
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .body(e.getMessage());
+        }
+    }
+
     @PostMapping("/cadastrar-veiculo/{email_ou_cpf}")
     public ResponseEntity createVehicle(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Vehicle vehicle){
         try {
@@ -54,12 +68,12 @@ public class ApiVeiculosController {
     public ResponseEntity getVehicles(@PathVariable(value="email_ou_cpf") String emailOuCpf){
         try {
             return ResponseEntity
-                    .status(HttpStatus.CREATED)
+                    .status(HttpStatus.OK)
                     .body(vehicleService.getVehiclesByOwner(emailOuCpf));
 
         } catch (IllegalArgumentException e){
             return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.NO_CONTENT)
                     .body(e.getMessage());
         }
     }
