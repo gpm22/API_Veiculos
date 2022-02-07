@@ -1,10 +1,11 @@
-package com.github.gpm22.API_Veiculos.Services;
+package com.github.gpm22.API_Veiculos.Services.impl;
 
 import com.github.gpm22.API_Veiculos.Client.ApiVeiculosClient;
 import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
 import com.github.gpm22.API_Veiculos.Repositories.VehicleRepository;
+import com.github.gpm22.API_Veiculos.Services.IVehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +13,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 @Service
-public class ApiVeiculosService {
+public class VehicleService implements IVehicleService {
 
     @Autowired
     private VehicleRepository vehicleRepository;
@@ -24,7 +24,7 @@ public class ApiVeiculosService {
     private OwnerRepository ownerRepository;
 
     ApiVeiculosClient client = new ApiVeiculosClient();
-
+    @Override
     public Vehicle save(String emailOuCpf, Vehicle vehicle) throws IllegalArgumentException {
 
         Owner owner = ownerRepository.findByCpfOrEmail(emailOuCpf, emailOuCpf);
@@ -57,35 +57,6 @@ public class ApiVeiculosService {
         return vehicleRepository.save(vehicle);
     }
 
-    public Owner save(Owner owner) throws IllegalArgumentException {
-
-        if (!this.ownerNameValidation(owner.getName())) {
-            throw new IllegalArgumentException("Nome: " + owner.getName() + " é inválido!");
-        }
-
-        if (!this.ownerCpfValidation(owner.getCpf())) {
-            throw new IllegalArgumentException("CPF: " + owner.getCpf() + " é inválido!");
-        }
-
-        if (!this.ownerEmailValidation(owner.getEmail())) {
-            throw new IllegalArgumentException("Email: " + owner.getEmail() + " é inválido!");
-        }
-
-        if (owner.getBirthDate() == null) {
-            throw new IllegalArgumentException("Data de aniversário inválida!");
-        }
-
-        if (ownerRepository.findByCpf(owner.getCpf()) != null) {
-            throw new IllegalArgumentException("CPF: " + owner.getCpf() + " já utilizado!");
-        }
-
-        if (ownerRepository.findByEmail(owner.getEmail()) != null) {
-            throw new IllegalArgumentException("Email: " + owner.getEmail() + " já utilizado!");
-        }
-
-        return ownerRepository.save(owner);
-    }
-
     public int rotationDay(String year) {
         String lastDigit = year.substring(3, 4);
 
@@ -99,30 +70,18 @@ public class ApiVeiculosService {
         };
     }
 
-    public Boolean isRotationActive(int day) {
+    private Boolean isRotationActive(int day) {
         return day == Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
     }
 
-    public Boolean ownerNameValidation(String ownerName) {
-        String nameValidation = "^(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*(?: (?:(?:e|y|de(?:(?: la| las| lo| los))?|do|dos|da|das|del|van|von|bin|le) )?(?:(?:(?:d'|D'|O'|Mc|Mac|al\\-))?(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+|(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*))+(?: (?:Jr\\.|II|III|IV))?$";
-        return Pattern.compile(nameValidation).matcher(ownerName).matches();
-    }
+    private String getFipePrice(Vehicle vehicle) {
 
-    public Boolean ownerEmailValidation(String ownerEmail) {
-        String emailValidation = "^[A-Za-z0-9+_.-]+@(.+)$";
-        return Pattern.compile(emailValidation).matcher(ownerEmail).matches();
-    }
+        String type = vehicle.getType();
+        String codeBrand = getCodeBrand(type, vehicle.getBrand());
+        String codeModel = getCodeModel(type, codeBrand, vehicle.getModel());
+        String fipeYear = getFipeYear(type, codeBrand, codeModel, vehicle.getYear());
 
-    public Boolean ownerCpfValidation(String ownerCpf) {
-        String cpfValidation = "[0-9]{3}\\.?[0-9]{3}\\.?[0-9]{3}\\-?[0-9]{2}";
-
-        return Pattern.compile(cpfValidation).matcher(ownerCpf).matches();
-    }
-
-    public Boolean ownerBirthDateValidation(String ownerBirthDate) {
-        String birthDateValidation = "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$";
-
-        return Pattern.compile(birthDateValidation).matcher(ownerBirthDate).matches();
+        return client.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
     }
 
     private String getCodeBrand(String type, String vehicleBrand) {
@@ -137,16 +96,7 @@ public class ApiVeiculosService {
         return client.getYearlList(type, codeBrand, codeModel).filter(year -> year.getNome().equals(vehicleYear)).findAny().get().getCodigo();
     }
 
-    public String getFipePrice(Vehicle vehicle) {
-
-        String type = vehicle.getType();
-        String codeBrand = getCodeBrand(type, vehicle.getBrand());
-        String codeModel = getCodeModel(type, codeBrand, vehicle.getModel());
-        String fipeYear = getFipeYear(type, codeBrand, codeModel, vehicle.getYear());
-
-        return client.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
-    }
-
+    @Override
     public Set<Vehicle> getVehiclesByOwner(String emailOuCpf) {
         Optional<Owner> optional = Optional.ofNullable(ownerRepository.findByCpfOrEmail(emailOuCpf, emailOuCpf));
 
@@ -159,4 +109,3 @@ public class ApiVeiculosService {
         }
     }
 }
-

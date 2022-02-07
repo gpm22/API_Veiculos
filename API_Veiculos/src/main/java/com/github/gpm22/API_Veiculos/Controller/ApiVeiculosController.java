@@ -2,8 +2,8 @@ package com.github.gpm22.API_Veiculos.Controller;
 
 import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
-import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
-import com.github.gpm22.API_Veiculos.Services.ApiVeiculosService;
+import com.github.gpm22.API_Veiculos.Services.IOwnerService;
+import com.github.gpm22.API_Veiculos.Services.IVehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,18 +17,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RestController
 @RequestMapping("/apiveiculos/v1")
 public class ApiVeiculosController {
-    @Autowired
-    private OwnerRepository ownerRepository;
 
     @Autowired
-    private ApiVeiculosService service;
+    private IVehicleService vehicleService;
+
+    @Autowired
+    private IOwnerService ownerService;
 
     @PostMapping("/usuario")
     public ResponseEntity createOwner(@RequestBody Owner owner) {
         try {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(service.save(owner));
+                    .body(ownerService.save(owner));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
@@ -40,7 +41,7 @@ public class ApiVeiculosController {
         try {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(service.save(emailOuCpf, vehicle));
+                    .body(vehicleService.save(emailOuCpf, vehicle));
 
         } catch (IllegalArgumentException e){
             return ResponseEntity
@@ -54,7 +55,7 @@ public class ApiVeiculosController {
         try {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(service.getVehiclesByOwner(emailOuCpf));
+                    .body(vehicleService.getVehiclesByOwner(emailOuCpf));
 
         } catch (IllegalArgumentException e){
             return ResponseEntity
