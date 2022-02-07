@@ -100,4 +100,18 @@ public class Vehicle {
     public void setPrice(String price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id=" + id +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", year='" + year + '\'' +
+                ", type='" + type + '\'' +
+                ", rotationDay=" + rotationDay +
+                ", isRotationActive=" + isRotationActive +
+                ", price='" + price + '\'' +
+                '}';
+    }
 }

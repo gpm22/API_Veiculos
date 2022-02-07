@@ -95,4 +95,15 @@ public class Owner {
     public void addVehicle(Vehicle vehicle) {
         this.vehicles.add(vehicle);
     }
+
+    @Override
+    public String toString() {
+        return "Owner{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", birthDate=" + birthDate +
+                '}';
+    }
 }
