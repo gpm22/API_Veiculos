@@ -60,6 +60,10 @@ public class VehicleService implements IVehicleService {
             return vehicleRepository.save(vehicle);
         }
 
+        if(owner.getVehicles().contains(newVehicle)){
+            throw new IllegalArgumentException("O usuário com cpf " + owner.getCpf() + " já possui esse veículo cadastrado " + newVehicle);
+        }
+
         newVehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
 
         owner.addVehicle(newVehicle);
