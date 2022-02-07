@@ -1,5 +1,7 @@
 package com.github.gpm22.API_Veiculos.Entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -11,10 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "owner")
+@Table(name = "owners")
 public class Owner {
 
     @Id
@@ -28,14 +31,15 @@ public class Owner {
     @Column(name = "owner_cpf", nullable = false, unique = true)
     private String cpf;
     @Column(name = "owner_birthdate", nullable = false)
-    private String birthDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private Date birthDate;
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "owners_vehicles", joinColumns = @JoinColumn(name = "owner_id"), inverseJoinColumns = @JoinColumn(name = "vehicle_id"))
     private Set<Vehicle> vehicles;
 
     public Owner(){}
 
-    public Owner(String name, String email, String cpf, String birthDate){
+    public Owner(String name, String email, String cpf, Date birthDate){
         this.name = name;
         this.email = email;
         this.cpf = cpf;
@@ -72,11 +76,11 @@ public class Owner {
         this.cpf = cpf;
     }
 
-    public String getBirthDate() {
+    public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(String birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
