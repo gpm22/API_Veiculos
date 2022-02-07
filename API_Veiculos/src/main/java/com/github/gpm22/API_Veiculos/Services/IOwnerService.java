@@ -7,4 +7,6 @@ public interface IOwnerService {
     public Owner save(Owner owner) throws IllegalArgumentException;
 
     public Owner getByCpfOrEmail(String cpfOrEmail);
+
+    public Owner update(Owner owner) throws IllegalArgumentException;
 }
