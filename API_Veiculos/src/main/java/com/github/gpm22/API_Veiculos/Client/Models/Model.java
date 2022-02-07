@@ -1,9 +1,9 @@
-package com.github.gpm22.API_Veiculos.Client.Classes;
+package com.github.gpm22.API_Veiculos.Client.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Year {
+public class Model {
     private String nome;
     private String codigo;
 

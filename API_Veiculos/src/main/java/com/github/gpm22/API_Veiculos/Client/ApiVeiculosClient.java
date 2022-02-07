@@ -1,7 +1,7 @@
 package com.github.gpm22.API_Veiculos.Client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.gpm22.API_Veiculos.Client.Classes.*;
+import com.github.gpm22.API_Veiculos.Client.Models.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Arrays;
