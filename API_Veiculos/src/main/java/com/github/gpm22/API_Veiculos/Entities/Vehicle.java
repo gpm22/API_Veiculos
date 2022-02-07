@@ -5,29 +5,35 @@ import javax.persistence.*;
 @Entity
 @Table(name = "vehicle")
 public class Vehicle {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "vehicle_id")
     private long id;
+    @Column(name = "vehicle_brand", nullable = false)
     private String brand;
+    @Column(name = "vehicle_model", nullable = false)
     private String model;
+    @Column(name = "vehicle_year", nullable = false)
     private String year;
+    @Column(name = "vehicle_type", nullable = false)
     private String type;
+    @Column(name = "vehicle_rotation_day")
     private int rotationDay;
+    @Column(name = "vehicle_is_rotation_active")
     private Boolean isRotationActive;
+    @Column(name = "vehicle_is_price")
     private String price;
 
-    public Vehicle(){
-
-    }
+    public Vehicle(){}
 
     public Vehicle(String brand, String model, String year, String type){
         this.brand = brand;
         this.model = model;
         this.year = year;
         this.type = type;
-
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
         return id;
     }
@@ -36,16 +42,12 @@ public class Vehicle {
         this.id = id;
     }
 
-    @Column(name = "brand", nullable = false)
     public String getBrand() {
         return brand;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
+    public void setBrand(String brand) { this.brand = brand; }
 
-    @Column(name = "model", nullable = false)
     public String getModel() {
         return model;
     }
@@ -54,7 +56,6 @@ public class Vehicle {
         this.model = model;
     }
 
-    @Column(name = "year", nullable = false)
     public String getYear() {
         return year;
     }
@@ -63,7 +64,6 @@ public class Vehicle {
         this.year = year;
     }
 
-    @Column(name = "type", nullable = false)
     public String getType() {
         return type;
     }
@@ -72,7 +72,6 @@ public class Vehicle {
         this.type = type;
     }
 
-    @Column(name = "rotationDay")
     public int getRotationDay() {
         return rotationDay;
     }
@@ -81,7 +80,6 @@ public class Vehicle {
         this.rotationDay = rotationDay;
     }
 
-    @Column(name = "rotationActive")
     public Boolean getRotationActive() {
         return isRotationActive;
     }
@@ -90,7 +88,6 @@ public class Vehicle {
         isRotationActive = rotationActive;
     }
 
-    @Column(name = "price")
     public String getPrice() {
         return price;
     }
