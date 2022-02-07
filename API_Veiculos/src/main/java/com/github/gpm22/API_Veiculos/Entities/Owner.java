@@ -1,18 +1,37 @@
 package com.github.gpm22.API_Veiculos.Entities;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.FetchType;
+import javax.persistence.CascadeType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
+import java.util.Set;
 
 @Entity
 @Table(name = "owner")
 public class Owner {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "owner_id")
     private long id;
+    @Column(name = "owner_name", nullable = false)
     private String name;
+    @Column(name = "owner_email", nullable = false, unique = true)
     private String email;
+    @Column(name = "owner_cpf", nullable = false, unique = true)
     private String cpf;
+    @Column(name = "owner_birthDate", nullable = false)
     private String birthDate;
-    private List<Vehicle> vehicles;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "owners_vehicles", joinColumns = @JoinColumn(name = "owner_id"), inverseJoinColumns = @JoinColumn(name = "vehicle_id"))
+    private Set<Vehicle> vehicles;
 
     public Owner(){
 
@@ -25,8 +44,7 @@ public class Owner {
         this.birthDate = birthDate;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+
     public long getId() {
         return id;
     }
@@ -35,7 +53,6 @@ public class Owner {
         this.id = id;
     }
 
-    @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }
@@ -44,7 +61,6 @@ public class Owner {
         this.name = name;
     }
 
-    @Column(name = "email", nullable = false, unique = true)
     public String getEmail() {
         return email;
     }
@@ -53,16 +69,12 @@ public class Owner {
         this.email = email;
     }
 
-    @Column(name = "cpf", nullable = false, unique = true)
-    public String getCpf() {
-        return cpf;
-    }
+    public String getCpf() { return cpf; }
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
-    @Column(name = "birthDate", nullable = false)
     public String getBirthDate() {
         return birthDate;
     }
@@ -71,14 +83,11 @@ public class Owner {
         this.birthDate = birthDate;
     }
 
-
-    @Column(name = "vehicles")
-    @ElementCollection(targetClass = Vehicle.class)
-    public List<Vehicle> getVehicles() {
+    public Set<Vehicle> getVehicles() {
         return vehicles;
     }
 
-    public void setVehicles(List<Vehicle> vehicles) {
+    public void setVehicles(Set<Vehicle> vehicles) {
         this.vehicles = vehicles;
     }
 
