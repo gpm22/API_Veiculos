@@ -1,6 +1,6 @@
 package com.github.gpm22.API_Veiculos.Services.impl;
 
-import com.github.gpm22.API_Veiculos.Client.ApiVeiculosClient;
+import com.github.gpm22.API_Veiculos.Client.ApiFipeClient;
 import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
@@ -9,7 +9,6 @@ import com.github.gpm22.API_Veiculos.Services.IVehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Optional;
 import java.util.Set;
@@ -23,7 +22,9 @@ public class VehicleService implements IVehicleService {
     @Autowired
     private OwnerRepository ownerRepository;
 
-    ApiVeiculosClient client = new ApiVeiculosClient();
+    @Autowired
+    private ApiFipeClient apiFipeClient;
+
     @Override
     public Vehicle save(String emailOuCpf, Vehicle vehicle) throws IllegalArgumentException {
 
@@ -57,7 +58,7 @@ public class VehicleService implements IVehicleService {
         return vehicleRepository.save(vehicle);
     }
 
-    public int rotationDay(String year) {
+    private int rotationDay(String year) {
         String lastDigit = year.substring(3, 4);
 
         return switch (lastDigit) {
@@ -66,7 +67,7 @@ public class VehicleService implements IVehicleService {
             case "4", "5" -> Calendar.WEDNESDAY;
             case "6", "7" -> Calendar.THURSDAY;
             case "8", "9" -> Calendar.FRIDAY;
-            default -> Calendar.SUNDAY;
+            default -> -1;
         };
     }
 
@@ -81,19 +82,19 @@ public class VehicleService implements IVehicleService {
         String codeModel = getCodeModel(type, codeBrand, vehicle.getModel());
         String fipeYear = getFipeYear(type, codeBrand, codeModel, vehicle.getYear());
 
-        return client.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
+        return apiFipeClient.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
     }
 
     private String getCodeBrand(String type, String vehicleBrand) {
-        return client.getBrandList(type).filter(brand -> brand.getNome().equals(vehicleBrand)).findAny().get().getCodigo();
+        return apiFipeClient.getBrandList(type).filter(brand -> brand.getNome().equals(vehicleBrand)).findAny().get().getCodigo();
     }
 
     private String getCodeModel(String type, String codeBrand, String vehicleModel) {
-        return Arrays.stream(client.getModelList(type, codeBrand)).sequential().filter(model -> model.getNome().equals(vehicleModel)).findAny().get().getCodigo();
+        return apiFipeClient.getModelList(type, codeBrand).sequential().filter(model -> model.getNome().equals(vehicleModel)).findAny().get().getCodigo();
     }
 
     private String getFipeYear(String type, String codeBrand, String codeModel, String vehicleYear) {
-        return client.getYearlList(type, codeBrand, codeModel).filter(year -> year.getNome().equals(vehicleYear)).findAny().get().getCodigo();
+        return apiFipeClient.getYearlList(type, codeBrand, codeModel).filter(year -> year.getNome().equals(vehicleYear)).findAny().get().getCodigo();
     }
 
     @Override
