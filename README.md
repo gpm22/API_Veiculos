@@ -54,6 +54,59 @@ O realizamento correto dos cadastros irá retornar *Status 201*, enquanto que a 
   * Usado para ter acesso aos dados do banco de dados utilizando *queries* SQL através do **Java Persistence API (JPA)**
   * Desse modo, a API consegue acessar e alterar um certo banco de dados;
 
+## Como usar
+
+Para usar essa API é necessário, além de ter um clone local do atual repositório, ter o **Gradle** instalado. Para instalar o **Gradle** é só seguir os passos apresentados em https://gradle.org/install/.
+
+Após instalar o **Gradle**, é só rodar o seguinte comando através de um terminal/console na pasta do projeto:
+
+```bash
+gradle bootRun
+```
+
+Após rodar esse comando, um servidor tomcat contendo a API será subido na porta **8080**. 
+
+O sistema tem 4 end-points:
+
+1. http://localhost:8080/apiveiculos/v1/usuario
+
+   * Usado para cadastro de usuários através de um método post com corpo sendo um JSON seguindo o padrão:
+
+     ```json
+     {
+         "name":"Luke Skywalker",    
+      	"email":"greensaber@newrepublic.com",
+         "cpf": "981.434.454-90",    
+         "birthDate": "21/07/2000"
+     }
+     ```
+
+     
+
+2. http://localhost:8080/apiveiculos/v1/usuario/{cpf ou email}
+
+   * Usado para recuperar todos os dados de um certo usuário;
+
+3. http://localhost:8080/apiveiculos/v1/cadastrar-veiculo/{cpf ou Email}
+
+   * Usado para cadastrar um certo veículo para um certo usuário;
+
+   * O corpo deve conter um JSON no seguinte formato:
+
+     ```json
+     {    
+         "brand":"HYUNDAI",    
+         "model":"HD80 3.0 16V (diesel)(E5)",    
+         "year": "2018",    
+         "type": "caminhoes"}
+     ```
+
+   * Os valores do JSON devem ser os **mesmos** disponibilizados pela [FIPE API HTTP REST](https://deividfortuna.github.io/fipe/).
+
+4. http://localhost:8080/apiveiculos/v1/lista-de-veiculos/{cpf ou email}
+
+   * Usado para recuperar todos os veículos de um certo usuário;
+
 # Exemplos
 
 A seguir são mostrados alguns exemplo feitos utilizando o aplicativo [Postman](https://www.postman.com/).
@@ -227,7 +280,7 @@ Não existe usuário com o email ou cpf: foreveryoungbill.com
 
 ## Solicitação da lista de veículos
 
-Todos os veículos do persistente **Ash** foram requisitados através de uma requisição *GET* para http://localhost:8080/apiveiculos/v1/lista-de-veiculos/foreveryoung@bill.com, que resultou em:
+Todos os veículos do persistente **Ash** foram requisitados através de uma requisição *GET* para http://localhost:8080/apiveiculos/v1/usuario/foreveryoung@bill.com, que resultou em:
 
 ```json
 {
@@ -341,7 +394,7 @@ Requisições para CPFs ou emails inexistentes resulta em:
 Não existe usuário com o email ou cpf: 321.139.01818
 ```
 
-Uma requisão *GET* para http://localhost:8080/apiveiculos/v1/lista-de-veiculos/lovemydog@neopets.com irá retornar os veículos do nosso querido amante dos animais John Wick:
+Uma requisão *GET* para http://localhost:8080/apiveiculos/v1/usuario/lovemydog@neopets.com irá retornar os veículos do nosso querido amante dos animais John Wick:
 
 ```json
 {
