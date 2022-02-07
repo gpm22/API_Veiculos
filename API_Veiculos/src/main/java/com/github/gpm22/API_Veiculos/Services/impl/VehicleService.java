@@ -6,10 +6,10 @@ import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
 import com.github.gpm22.API_Veiculos.Repositories.VehicleRepository;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
+import com.github.gpm22.API_Veiculos.Utils.Commons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
 import java.util.Optional;
 import java.util.Set;
 
@@ -50,29 +50,12 @@ public class VehicleService implements IVehicleService {
             throw new IllegalArgumentException("Parâmetro tipo não pode ser vazio!\n Deve ser: carros, motos ou caminhoes.");
         }
 
-        vehicle.setRotationDay(this.rotationDay(vehicle.getYear()));
-        vehicle.setRotationActive(this.isRotationActive(vehicle.getRotationDay()));
+        vehicle.setRotationDay(Commons.rotationDay(vehicle.getYear()));
+        vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
         vehicle.setPrice(this.getFipePrice(vehicle));
         owner.addVehicle(vehicle);
 
         return vehicleRepository.save(vehicle);
-    }
-
-    private int rotationDay(String year) {
-        String lastDigit = year.substring(3, 4);
-
-        return switch (lastDigit) {
-            case "0", "1" -> Calendar.MONDAY;
-            case "2", "3" -> Calendar.TUESDAY;
-            case "4", "5" -> Calendar.WEDNESDAY;
-            case "6", "7" -> Calendar.THURSDAY;
-            case "8", "9" -> Calendar.FRIDAY;
-            default -> -1;
-        };
-    }
-
-    private Boolean isRotationActive(int day) {
-        return day == Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
     }
 
     private String getFipePrice(Vehicle vehicle) {
@@ -103,7 +86,7 @@ public class VehicleService implements IVehicleService {
 
         if (optional.isPresent()) {
             Set<Vehicle> vehicles = optional.get().getVehicles();
-            vehicles.forEach(n -> n.setRotationActive(this.isRotationActive(n.getRotationDay())));
+            vehicles.forEach(n -> n.setRotationActive(Commons.isRotationActive(n.getRotationDay())));
             return vehicles;
         } else {
             throw new IllegalArgumentException("Não existe usuário com o " + (emailOuCpf.contains("@") ? "email" : "cpf") + ": " + emailOuCpf);

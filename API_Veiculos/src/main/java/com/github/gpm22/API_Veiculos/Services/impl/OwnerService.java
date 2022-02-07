@@ -1,11 +1,15 @@
 package com.github.gpm22.API_Veiculos.Services.impl;
 
 import com.github.gpm22.API_Veiculos.Entities.Owner;
+import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
 import com.github.gpm22.API_Veiculos.Services.IOwnerService;
+import com.github.gpm22.API_Veiculos.Utils.Commons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Service
@@ -41,6 +45,19 @@ public class OwnerService implements IOwnerService {
         }
 
         return ownerRepository.save(owner);
+    }
+
+    @Override
+    public Owner getByCpfOrEmail(String cpfOrEmail) {
+        Optional<Owner> optional = Optional.ofNullable(ownerRepository.findByCpfOrEmail(cpfOrEmail, cpfOrEmail));
+
+        if (optional.isPresent()) {
+            Set<Vehicle> vehicles = optional.get().getVehicles();
+            vehicles.forEach(n -> n.setRotationActive(Commons.isRotationActive(n.getRotationDay())));
+            return optional.get();
+        } else {
+            throw new IllegalArgumentException("Não existe usuário com o " + (cpfOrEmail.contains("@") ? "email" : "cpf") + ": " + cpfOrEmail);
+        }
     }
 
     private Boolean ownerNameValidation(String ownerName) {
