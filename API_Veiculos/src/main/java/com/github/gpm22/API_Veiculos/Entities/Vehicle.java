@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import java.util.Objects;
 
 @Entity
 @Table(name = "vehicles")
@@ -113,5 +114,18 @@ public class Vehicle {
                 ", isRotationActive=" + isRotationActive +
                 ", price='" + price + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vehicle vehicle = (Vehicle) o;
+        return getId() == vehicle.getId() && getRotationDay() == vehicle.getRotationDay() && getBrand().equals(vehicle.getBrand()) && getModel().equals(vehicle.getModel()) && getYear().equals(vehicle.getYear()) && getType().equals(vehicle.getType()) && getPrice().equals(vehicle.getPrice());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getBrand(), getModel(), getYear(), getType(), getRotationDay(), getPrice());
     }
 }
