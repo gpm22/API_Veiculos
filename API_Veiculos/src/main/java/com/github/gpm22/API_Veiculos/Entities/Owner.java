@@ -27,15 +27,13 @@ public class Owner {
     private String email;
     @Column(name = "owner_cpf", nullable = false, unique = true)
     private String cpf;
-    @Column(name = "owner_birthDate", nullable = false)
+    @Column(name = "owner_birthdate", nullable = false)
     private String birthDate;
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "owners_vehicles", joinColumns = @JoinColumn(name = "owner_id"), inverseJoinColumns = @JoinColumn(name = "vehicle_id"))
     private Set<Vehicle> vehicles;
 
-    public Owner(){
-
-    }
+    public Owner(){}
 
     public Owner(String name, String email, String cpf, String birthDate){
         this.name = name;
@@ -43,7 +41,6 @@ public class Owner {
         this.cpf = cpf;
         this.birthDate = birthDate;
     }
-
 
     public long getId() {
         return id;
