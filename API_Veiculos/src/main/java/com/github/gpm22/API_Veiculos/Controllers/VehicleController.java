@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/apiveiculos/v1/veiculo")
+@RequestMapping("/veiculo")
 public class VehicleController {
 
     Logger logger = LoggerFactory.getLogger(VehicleController.class);
