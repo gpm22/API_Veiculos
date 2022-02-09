@@ -9,4 +9,8 @@ public interface IOwnerService {
     public Owner getByCpfOrEmail(String cpfOrEmail);
 
     public Owner update(Owner owner) throws IllegalArgumentException;
+
+    Owner updateByCpfOrEmail(String emailOuCpf, Owner owner);
+
+    Owner deleteByCpfOrEmail(String emailOuCpf);
 }

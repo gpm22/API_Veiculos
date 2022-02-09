@@ -65,6 +65,16 @@ public class OwnerService implements IOwnerService {
         return ownerRepository.save(owner);
     }
 
+    @Override
+    public Owner updateByCpfOrEmail(String emailOuCpf, Owner owner) {
+        return null;
+    }
+
+    @Override
+    public Owner deleteByCpfOrEmail(String emailOuCpf) {
+        return null;
+    }
+
     private Boolean ownerNameValidation(String ownerName) {
         String nameValidation = "^(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*(?: (?:(?:e|y|de(?:(?: la| las| lo| los))?|do|dos|da|das|del|van|von|bin|le) )?(?:(?:(?:d'|D'|O'|Mc|Mac|al\\-))?(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+|(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*))+(?: (?:Jr\\.|II|III|IV))?$";
         return Pattern.compile(nameValidation).matcher(ownerName).matches();
