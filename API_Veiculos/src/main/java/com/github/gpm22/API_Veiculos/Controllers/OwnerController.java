@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/apiveiculos/v1/usuario")
+@RequestMapping("/usuario")
 public class OwnerController {
 
     Logger logger = LoggerFactory.getLogger(OwnerController.class);
@@ -31,6 +31,50 @@ public class OwnerController {
             logger.error("Erro durante cadastro do usuário:" + owner);
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{email_ou_cpf}")
+    public ResponseEntity updateOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Owner owner) {
+        try {
+            logger.info("Solicitado alteração do usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
+
+            Owner updateOwner = ownerService.updateByCpfOrEmail(emailOuCpf, owner);
+
+            logger.info("Retornando usuário " + updateOwner);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(updateOwner);
+
+        } catch (IllegalArgumentException e){
+            logger.error("Erro ao atualizar usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{email_ou_cpf}")
+    public ResponseEntity deleteOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf) {
+        try {
+            logger.info("Solicitado exclusão usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
+
+            Owner owner = ownerService.deleteByCpfOrEmail(emailOuCpf);
+
+            logger.info("Exclusão concluída do usuário " + owner);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(owner);
+
+        } catch (IllegalArgumentException e){
+            logger.error("Erro ao excluir usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
         }
     }
