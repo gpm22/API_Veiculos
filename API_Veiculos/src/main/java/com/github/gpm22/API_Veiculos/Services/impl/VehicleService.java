@@ -1,6 +1,6 @@
 package com.github.gpm22.API_Veiculos.Services.impl;
 
-import com.github.gpm22.API_Veiculos.Client.ApiFipeClient;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipeClient;
 import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.VehicleRepository;

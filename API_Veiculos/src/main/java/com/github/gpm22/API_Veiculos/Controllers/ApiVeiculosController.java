@@ -1,4 +1,4 @@
-package com.github.gpm22.API_Veiculos.Controller;
+package com.github.gpm22.API_Veiculos.Controllers;
 
 import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;

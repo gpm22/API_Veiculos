@@ -1,11 +1,11 @@
-package com.github.gpm22.API_Veiculos.Client;
+package com.github.gpm22.API_Veiculos.Clients;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.gpm22.API_Veiculos.Client.Models.Brand;
-import com.github.gpm22.API_Veiculos.Client.Models.Model;
-import com.github.gpm22.API_Veiculos.Client.Models.ModelYear;
-import com.github.gpm22.API_Veiculos.Client.Models.Price;
-import com.github.gpm22.API_Veiculos.Client.Models.Year;
+import com.github.gpm22.API_Veiculos.Clients.Models.Brand;
+import com.github.gpm22.API_Veiculos.Clients.Models.Model;
+import com.github.gpm22.API_Veiculos.Clients.Models.ModelYear;
+import com.github.gpm22.API_Veiculos.Clients.Models.Price;
+import com.github.gpm22.API_Veiculos.Clients.Models.Year;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
