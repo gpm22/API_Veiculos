@@ -75,9 +75,9 @@ public class OwnerService implements IOwnerService {
         return Pattern.compile(emailValidation).matcher(ownerEmail).matches();
     }
 
-    private Boolean ownerCpfValidation(String ownerCpf) {
-        String cpfValidation = "[0-9]{3}\\.?[0-9]{3}\\.?[0-9]{3}\\-?[0-9]{2}";
 
-        return Pattern.compile(cpfValidation).matcher(ownerCpf).matches();
+    private Boolean ownerCpfValidation(String ownerCpf){
+        return Commons.cpfValidation(ownerCpf);
     }
+
 }
