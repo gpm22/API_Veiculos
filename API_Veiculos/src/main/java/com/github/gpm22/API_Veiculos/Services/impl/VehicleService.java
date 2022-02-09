@@ -9,6 +9,7 @@ import com.github.gpm22.API_Veiculos.Utils.Commons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -107,5 +108,15 @@ public class VehicleService implements IVehicleService {
         } else {
             throw new IllegalArgumentException("Não existe usuário com o " + (emailOuCpf.contains("@") ? "email" : "cpf") + ": " + emailOuCpf);
         }
+    }
+
+    @Override
+    public List<Vehicle> updatePrices(){
+
+        List<Vehicle> vehicles = vehicleRepository.findAll();
+
+        vehicles.forEach(vehicle -> vehicle.setPrice(this.getFipePrice(vehicle)));
+
+        return vehicleRepository.saveAll(vehicles);
     }
 }
