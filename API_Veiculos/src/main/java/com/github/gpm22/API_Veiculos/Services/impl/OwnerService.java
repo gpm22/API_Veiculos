@@ -81,15 +81,11 @@ public class OwnerService implements IOwnerService {
         Optional<Owner> owner = Optional.ofNullable(ownerRepository.findByCpfOrEmail(cpfOrEmail, cpfOrEmail));
 
         if (owner.isPresent()) {
-            updateVehiclesRotationActive(owner.get().getVehicles());
+            Commons.updateVehiclesRotationActive(owner.get().getVehicles());
             return owner.get();
         } else {
             throw new IllegalArgumentException("Não existe usuário com o " + (cpfOrEmail.contains("@") ? "email" : "cpf") + ": " + cpfOrEmail);
         }
-    }
-
-    private void updateVehiclesRotationActive(Collection<Vehicle> vehicles){
-        vehicles.forEach(n -> n.setRotationActive(Commons.isRotationActive(n.getRotationDay())));
     }
 
     @Override
