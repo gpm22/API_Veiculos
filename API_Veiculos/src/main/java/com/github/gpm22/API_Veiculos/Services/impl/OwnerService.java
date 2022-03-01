@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 @Service
@@ -21,12 +20,12 @@ public class OwnerService implements IOwnerService {
     private OwnerRepository ownerRepository;
 
     @Override
-    public Owner validateAndSaveNewOwner(Owner owner) throws IllegalArgumentException {
-        validateNewOwnerInformation(owner);
+    public Owner saveOrUpdateOwner(Owner owner) throws IllegalArgumentException {
         return ownerRepository.save(owner);
     }
 
-    private void validateNewOwnerInformation(Owner owner) throws IllegalArgumentException{
+    @Override
+    public void validateNewOwnerInformation(Owner owner) throws IllegalArgumentException{
         validateOwnerInformation(owner);
         verifyIfCpfIsUnique(owner);
         verifyIfEmailIsUnique(owner);
@@ -94,22 +93,9 @@ public class OwnerService implements IOwnerService {
     }
 
     @Override
-    public Owner updateOwner(Owner owner) throws IllegalArgumentException {
-        return ownerRepository.save(owner);
-    }
-
-    @Override
-    public Owner updateOwnerByCpfOrEmail(String emailOuCpf, Owner updatedOwner) {
-
-        try {
-            Owner owner = getOwnerByCpfOrEmail(emailOuCpf);
-            validateOwnerInformation(updatedOwner);
-            compareOwnerAndUpdatedOwner(owner, updatedOwner);
-            updateOwnerWithUpdatedOwner(owner, updatedOwner);
-            return ownerRepository.save(owner);
-        } catch (IllegalArgumentException e) {
-            throw e;
-        }
+    public void validateUpdatedOwnerInformation(Owner owner, Owner updatedOwner){
+        validateOwnerInformation(updatedOwner);
+        compareOwnerAndUpdatedOwner(owner,updatedOwner);
     }
 
     private void compareOwnerAndUpdatedOwner(Owner owner, Owner updatedOwner) {
@@ -121,7 +107,8 @@ public class OwnerService implements IOwnerService {
         }
     }
 
-    private void updateOwnerWithUpdatedOwner(Owner owner, Owner updatedOwner) {
+    @Override
+    public void updateOwnerInfo(Owner owner, Owner updatedOwner) {
         owner.setCpf(updatedOwner.getCpf());
         owner.setBirthDate(updatedOwner.getBirthDate());
         owner.setEmail(updatedOwner.getEmail());

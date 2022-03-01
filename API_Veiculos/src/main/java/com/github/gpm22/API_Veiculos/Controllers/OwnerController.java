@@ -22,7 +22,8 @@ public class OwnerController {
     public ResponseEntity createOwner(@RequestBody Owner owner) {
         try {
             logger.info("Iniciando cadastro do usuario: " + owner);
-            Owner newOwner = ownerService.validateAndSaveNewOwner(owner);
+            ownerService.validateNewOwnerInformation(owner);
+            Owner newOwner = ownerService.saveOrUpdateOwner(owner);
             logger.info("Cadastro realizado com sucesso do usuario: " + newOwner);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -36,17 +37,22 @@ public class OwnerController {
     }
 
     @PutMapping("/{email_ou_cpf}")
-    public ResponseEntity updateOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Owner owner) {
+    public ResponseEntity updateOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Owner updatedOwner) {
         try {
             logger.info("Solicitado alteração do usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
-            Owner updatedOwner = ownerService.updateOwnerByCpfOrEmail(emailOuCpf, owner);
+            Owner owner = ownerService.getOwnerByCpfOrEmail(emailOuCpf);
 
-            logger.info("Retornando usuário " + updatedOwner);
+            ownerService.validateUpdatedOwnerInformation(owner, updatedOwner);
+            ownerService.updateOwnerInfo(owner, updatedOwner);
+
+            Owner savedOwner = ownerService.saveOrUpdateOwner(owner);
+
+            logger.info("Retornando usuário " + savedOwner);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(updatedOwner);
+                    .body(savedOwner);
 
         } catch (IllegalArgumentException e){
             logger.error("Erro ao atualizar usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
