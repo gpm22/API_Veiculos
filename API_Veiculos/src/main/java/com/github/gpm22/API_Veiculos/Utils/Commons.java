@@ -1,25 +1,33 @@
 package com.github.gpm22.API_Veiculos.Utils;
 
 import java.util.Calendar;
+import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Commons {
+
+    final private static Map<String, Integer> rotationDay = Stream.of(new Object[][] {
+            {"0", Calendar.MONDAY},
+            {"1", Calendar.MONDAY},
+            {"2", Calendar.TUESDAY},
+            {"3", Calendar.TUESDAY},
+            {"4", Calendar.WEDNESDAY},
+            {"5", Calendar.WEDNESDAY},
+            {"6", Calendar.THURSDAY},
+            {"7", Calendar.THURSDAY},
+            {"8", Calendar.FRIDAY},
+            {"9", Calendar.FRIDAY},
+    }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
+
     public static Boolean isRotationActive(int rotationDay) {
         return rotationDay == Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
     }
 
     public static int rotationDay(String year) {
         String lastDigit = year.substring(3, 4);
-
-        return switch (lastDigit) {
-            case "0", "1" -> Calendar.MONDAY;
-            case "2", "3" -> Calendar.TUESDAY;
-            case "4", "5" -> Calendar.WEDNESDAY;
-            case "6", "7" -> Calendar.THURSDAY;
-            case "8", "9" -> Calendar.FRIDAY;
-            default -> -1;
-        };
+        return rotationDay.get(lastDigit);
     }
 
     public static Boolean cpfValidation(String cpf){
@@ -51,7 +59,7 @@ public class Commons {
 
     private static boolean cpfDigitValidation(int[] cpf, int digit) {
 
-        int digitPosition = 0;
+        int digitPosition;
 
         int comparisonValue;
 
