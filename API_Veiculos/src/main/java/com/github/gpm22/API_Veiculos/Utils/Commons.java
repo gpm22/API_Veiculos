@@ -1,6 +1,9 @@
 package com.github.gpm22.API_Veiculos.Utils;
 
+import com.github.gpm22.API_Veiculos.Entities.Vehicle;
+
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -82,5 +85,9 @@ public class Commons {
         }
 
         return true;
+    }
+
+    public static void updateVehiclesRotationActive(Collection<Vehicle> vehicles){
+        vehicles.forEach(n -> n.setRotationActive(isRotationActive(n.getRotationDay())));
     }
 }
