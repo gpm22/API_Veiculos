@@ -1,33 +1,30 @@
 package com.github.gpm22.API_Veiculos.Utils;
 
 import java.util.Calendar;
-import java.util.Map;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Commons {
 
-    final private static Map<String, Integer> rotationDay = Stream.of(new Object[][] {
-            {"0", Calendar.MONDAY},
-            {"1", Calendar.MONDAY},
-            {"2", Calendar.TUESDAY},
-            {"3", Calendar.TUESDAY},
-            {"4", Calendar.WEDNESDAY},
-            {"5", Calendar.WEDNESDAY},
-            {"6", Calendar.THURSDAY},
-            {"7", Calendar.THURSDAY},
-            {"8", Calendar.FRIDAY},
-            {"9", Calendar.FRIDAY},
-    }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
+    final private static int[] rotationDay = {
+            Calendar.MONDAY,
+            Calendar.MONDAY,
+            Calendar.TUESDAY,
+            Calendar.TUESDAY,
+            Calendar.WEDNESDAY,
+            Calendar.WEDNESDAY,
+            Calendar.THURSDAY,
+            Calendar.THURSDAY,
+            Calendar.FRIDAY,
+            Calendar.FRIDAY };
 
     public static Boolean isRotationActive(int rotationDay) {
         return rotationDay == Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
     }
 
     public static int rotationDay(String year) {
-        String lastDigit = year.substring(3, 4);
-        return rotationDay.get(lastDigit);
+        int yearLastDigit = Integer.parseInt(year.substring(3, 4));
+        return rotationDay[yearLastDigit];
     }
 
     public static Boolean cpfValidation(String cpf){
@@ -35,33 +32,20 @@ public class Commons {
     }
 
     private static Boolean cpfValidateFormat(String cpf) {
-        String cpfValidation = "[0-9]{3}\\.?[0-9]{3}\\.?[0-9]{3}\\-?[0-9]{2}";
+        String cpfPattern = "[0-9]{3}\\.?[0-9]{3}\\.?[0-9]{3}\\-?[0-9]{2}";
 
-        return Pattern.compile(cpfValidation).matcher(cpf).matches();
+        return Pattern.compile(cpfPattern).matcher(cpf).matches();
     }
 
     private static Boolean cpfValidateCalculation(String cpf) {
         int[] cpfDigits = Stream.of(cpf.replaceAll("[^0-9]", "").split("")).mapToInt(Integer::parseInt).toArray();
         return cpfDigitValidation(cpfDigits, 1) && cpfDigitValidation(cpfDigits, 2)
-                && isAInvalidKnownCpf(cpfDigits);
-    }
-
-    private static boolean isAInvalidKnownCpf(int[] cpf) {
-
-        for (int i = 1; i < cpf.length; i++) {
-            if (cpf[i - 1] != cpf[i]) {
-                return true;
-            }
-        }
-
-        return false;
+                && !isAInvalidKnownCpf(cpfDigits);
     }
 
     private static boolean cpfDigitValidation(int[] cpf, int digit) {
 
         int digitPosition;
-
-        int comparisonValue;
 
         if (digit == 1) {
             digitPosition = 9;
@@ -71,19 +55,32 @@ public class Commons {
             throw new IllegalArgumentException("the value of digit can be only 1 and 2 and not " + digit);
         }
 
-        int sum = 0;
+        int cpfSum = 0;
 
         for (int i = 0; i < digitPosition; i++) {
-            sum += cpf[i] * (digitPosition + 1 - i);
+            cpfSum += cpf[i] * (digitPosition + 1 - i);
         }
 
-        comparisonValue = ((sum * 10) % 11);
+        int sumValidationValue = ((cpfSum * 10) % 11);
 
-        if (comparisonValue == 10) {
-            comparisonValue = 0;
+        if (sumValidationValue == 10) {
+            sumValidationValue = 0;
         }
 
-        return cpf[digitPosition] == comparisonValue;
+        return cpf[digitPosition] == sumValidationValue;
     }
 
+    private static boolean isAInvalidKnownCpf(int[] cpf) {
+
+        //verifying if the cpf is not compose of the same number,
+        //per example 000.000.000-00 and 111.111.111-11.
+
+        for (int i = 1; i < cpf.length; i++) {
+            if (cpf[i - 1] != cpf[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
