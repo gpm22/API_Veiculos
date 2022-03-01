@@ -22,7 +22,7 @@ public class OwnerController {
     public ResponseEntity createOwner(@RequestBody Owner owner) {
         try {
             logger.info("Iniciando cadastro do usuario: " + owner);
-            Owner newOwner = ownerService.save(owner);
+            Owner newOwner = ownerService.validateAndSaveNewOwner(owner);
             logger.info("Cadastro realizado com sucesso do usuario: " + newOwner);
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -40,13 +40,13 @@ public class OwnerController {
         try {
             logger.info("Solicitado alteração do usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
-            Owner updateOwner = ownerService.updateByCpfOrEmail(emailOuCpf, owner);
+            Owner updatedOwner = ownerService.updateOwnerByCpfOrEmail(emailOuCpf, owner);
 
-            logger.info("Retornando usuário " + updateOwner);
+            logger.info("Retornando usuário " + updatedOwner);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(updateOwner);
+                    .body(updatedOwner);
 
         } catch (IllegalArgumentException e){
             logger.error("Erro ao atualizar usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
@@ -62,7 +62,7 @@ public class OwnerController {
         try {
             logger.info("Solicitado exclusão usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
-            Owner owner = ownerService.deleteByCpfOrEmail(emailOuCpf);
+            Owner owner = ownerService.deleteOwnerByCpfOrEmail(emailOuCpf);
 
             logger.info("Exclusão concluída do usuário " + owner);
 
@@ -84,7 +84,7 @@ public class OwnerController {
         try {
             logger.info("Solicitado usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
-            Owner owner = ownerService.getByCpfOrEmail(emailOuCpf);
+            Owner owner = ownerService.getOwnerByCpfOrEmail(emailOuCpf);
 
             logger.info("Retornando usuário " + owner);
 

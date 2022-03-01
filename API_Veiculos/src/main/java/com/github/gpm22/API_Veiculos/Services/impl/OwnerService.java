@@ -8,6 +8,8 @@ import com.github.gpm22.API_Veiculos.Utils.Commons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -19,101 +21,117 @@ public class OwnerService implements IOwnerService {
     private OwnerRepository ownerRepository;
 
     @Override
-    public Owner save(Owner owner) throws IllegalArgumentException {
-        this.userValidation(owner);
-        this.uniqueCpfAndEmailValidation(owner);
+    public Owner validateAndSaveNewOwner(Owner owner) throws IllegalArgumentException {
+        validateNewOwnerInformation(owner);
         return ownerRepository.save(owner);
     }
 
-    private void userValidation(Owner owner) throws IllegalArgumentException{
-        if (!this.ownerNameValidation(owner.getName())) {
-            throw new IllegalArgumentException("Nome: " + owner.getName() + " é inválido!");
-        }
+    private void validateNewOwnerInformation(Owner owner) throws IllegalArgumentException{
+        validateOwnerInformation(owner);
+        verifyIfCpfIsUnique(owner);
+        verifyIfEmailIsUnique(owner);
+    }
 
-        if (!this.ownerCpfValidation(owner.getCpf())) {
-            throw new IllegalArgumentException("CPF: " + owner.getCpf() + " é inválido!");
-        }
+    private void validateOwnerInformation(Owner owner) throws IllegalArgumentException{
+        validateOwnerName(owner.getName());
+        validateOwnerCpf(owner.getCpf());
+        validateOwnerEmail(owner.getEmail());
+        validateOwnerBirthDate(owner.getBirthDate());
+    }
 
-        if (!this.ownerEmailValidation(owner.getEmail())) {
-            throw new IllegalArgumentException("Email: " + owner.getEmail() + " é inválido!");
+    private void validateOwnerName(String ownerName) throws IllegalArgumentException{
+        String namePattern = "^(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*(?: (?:(?:e|y|de(?:(?: la| las| lo| los))?|do|dos|da|das|del|van|von|bin|le) )?(?:(?:(?:d'|D'|O'|Mc|Mac|al\\-))?(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+|(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*))+(?: (?:Jr\\.|II|III|IV))?$";
+        if(!Pattern.compile(namePattern).matcher(ownerName).matches()){
+            throw new IllegalArgumentException("Nome: " + ownerName + " é inválido!");
         }
+    }
 
-        if (owner.getBirthDate() == null) {
+    private void validateOwnerCpf(String ownerCpf){
+        if(!Commons.cpfValidation(ownerCpf)){
+            throw new IllegalArgumentException("CPF: " + ownerCpf + " é inválido!");
+        }
+    }
+
+    private void validateOwnerEmail(String ownerEmail) throws IllegalArgumentException {
+        String emailPattern = "^[A-Za-z0-9+_.-]+@(.+)$";
+        if(!Pattern.compile(emailPattern).matcher(ownerEmail).matches()){
+            throw new IllegalArgumentException("Email: " + ownerEmail + " é inválido!");
+        }
+    }
+
+    private void validateOwnerBirthDate(Date ownerBirthDate){
+        if (ownerBirthDate == null) {
             throw new IllegalArgumentException("Data de aniversário inválida!");
         }
     }
 
-    private Boolean ownerNameValidation(String ownerName) {
-        String nameValidation = "^(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*(?: (?:(?:e|y|de(?:(?: la| las| lo| los))?|do|dos|da|das|del|van|von|bin|le) )?(?:(?:(?:d'|D'|O'|Mc|Mac|al\\-))?(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+|(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*))+(?: (?:Jr\\.|II|III|IV))?$";
-        return Pattern.compile(nameValidation).matcher(ownerName).matches();
-    }
-
-    private Boolean ownerEmailValidation(String ownerEmail) {
-        String emailValidation = "^[A-Za-z0-9+_.-]+@(.+)$";
-        return Pattern.compile(emailValidation).matcher(ownerEmail).matches();
-    }
-
-    private Boolean ownerCpfValidation(String ownerCpf){
-        return Commons.cpfValidation(ownerCpf);
-    }
-
-    private void uniqueCpfAndEmailValidation(Owner owner) throws IllegalArgumentException{
+    private void verifyIfCpfIsUnique(Owner owner) throws IllegalArgumentException{
         if (ownerRepository.findByCpf(owner.getCpf()) != null) {
             throw new IllegalArgumentException("CPF: " + owner.getCpf() + " já utilizado!");
         }
+    }
 
+    private void verifyIfEmailIsUnique(Owner owner) throws IllegalArgumentException{
         if (ownerRepository.findByEmail(owner.getEmail()) != null) {
             throw new IllegalArgumentException("Email: " + owner.getEmail() + " já utilizado!");
         }
     }
 
     @Override
-    public Owner getByCpfOrEmail(String cpfOrEmail) {
-        Optional<Owner> optional = Optional.ofNullable(ownerRepository.findByCpfOrEmail(cpfOrEmail, cpfOrEmail));
+    public Owner getOwnerByCpfOrEmail(String cpfOrEmail) {
+        Optional<Owner> owner = Optional.ofNullable(ownerRepository.findByCpfOrEmail(cpfOrEmail, cpfOrEmail));
 
-        if (optional.isPresent()) {
-            Set<Vehicle> vehicles = optional.get().getVehicles();
-            vehicles.forEach(n -> n.setRotationActive(Commons.isRotationActive(n.getRotationDay())));
-            return optional.get();
+        if (owner.isPresent()) {
+            updateVehiclesRotationActive(owner.get().getVehicles());
+            return owner.get();
         } else {
             throw new IllegalArgumentException("Não existe usuário com o " + (cpfOrEmail.contains("@") ? "email" : "cpf") + ": " + cpfOrEmail);
         }
     }
 
+    private void updateVehiclesRotationActive(Collection<Vehicle> vehicles){
+        vehicles.forEach(n -> n.setRotationActive(Commons.isRotationActive(n.getRotationDay())));
+    }
+
     @Override
-    public Owner update(Owner owner) throws IllegalArgumentException {
+    public Owner updateOwner(Owner owner) throws IllegalArgumentException {
         return ownerRepository.save(owner);
     }
 
     @Override
-    public Owner updateByCpfOrEmail(String emailOuCpf, Owner newOwner) {
+    public Owner updateOwnerByCpfOrEmail(String emailOuCpf, Owner updatedOwner) {
 
         try {
-            Owner owner = this.getByCpfOrEmail(emailOuCpf);
-
-            this.userValidation(newOwner);
-
-            if(!owner.getCpf().equals(newOwner.getCpf()) || !owner.getEmail().equals(newOwner.getEmail())){
-                if (ownerRepository.findByCpf(newOwner.getCpf()) != null && !owner.getCpf().equals(newOwner.getCpf())) {
-                    throw new IllegalArgumentException("CPF: " + newOwner.getCpf() + " já utilizado por outro usuário!");
-                }
-                if (ownerRepository.findByEmail(newOwner.getEmail()) != null && !owner.getEmail().equals(newOwner.getEmail())) {
-                    throw new IllegalArgumentException("Email: " + newOwner.getEmail() + " já utilizado por outro usuário!");
-                }
-                ownerRepository.delete(owner);
-            }
-
-            return ownerRepository.save(newOwner);
+            Owner owner = getOwnerByCpfOrEmail(emailOuCpf);
+            validateOwnerInformation(updatedOwner);
+            compareOwnerAndUpdatedOwner(owner, updatedOwner);
+            updateOwnerWithUpdatedOwner(owner, updatedOwner);
+            return ownerRepository.save(owner);
         } catch (IllegalArgumentException e) {
             throw e;
         }
+    }
 
+    private void compareOwnerAndUpdatedOwner(Owner owner, Owner updatedOwner) {
+        if(!owner.getCpf().equals(updatedOwner.getCpf())){
+            verifyIfCpfIsUnique(updatedOwner);
+        }
+        if(!owner.getEmail().equals(updatedOwner.getEmail())){
+            verifyIfEmailIsUnique(updatedOwner);
+        }
+    }
+
+    private void updateOwnerWithUpdatedOwner(Owner owner, Owner updatedOwner) {
+        owner.setCpf(updatedOwner.getCpf());
+        owner.setBirthDate(updatedOwner.getBirthDate());
+        owner.setEmail(updatedOwner.getEmail());
+        owner.setName(updatedOwner.getName());
     }
 
     @Override
-    public Owner deleteByCpfOrEmail(String emailOuCpf) {
+    public Owner deleteOwnerByCpfOrEmail(String emailOuCpf) {
         try {
-            Owner owner = this.getByCpfOrEmail(emailOuCpf);
+            Owner owner = this.getOwnerByCpfOrEmail(emailOuCpf);
             ownerRepository.delete(owner);
             return owner;
         } catch (IllegalArgumentException e) {

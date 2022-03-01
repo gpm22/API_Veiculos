@@ -4,13 +4,13 @@ import com.github.gpm22.API_Veiculos.Entities.Owner;
 
 public interface IOwnerService {
 
-    public Owner save(Owner owner) throws IllegalArgumentException;
+    public Owner validateAndSaveNewOwner(Owner owner) throws IllegalArgumentException;
 
-    public Owner getByCpfOrEmail(String cpfOrEmail);
+    public Owner getOwnerByCpfOrEmail(String cpfOrEmail);
 
-    public Owner update(Owner owner) throws IllegalArgumentException;
+    public Owner updateOwner(Owner owner) throws IllegalArgumentException;
 
-    Owner updateByCpfOrEmail(String emailOuCpf, Owner owner);
+    Owner updateOwnerByCpfOrEmail(String emailOuCpf, Owner owner);
 
-    Owner deleteByCpfOrEmail(String emailOuCpf);
+    Owner deleteOwnerByCpfOrEmail(String emailOuCpf);
 }

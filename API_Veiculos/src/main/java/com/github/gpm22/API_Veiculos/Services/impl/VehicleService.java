@@ -28,7 +28,7 @@ public class VehicleService implements IVehicleService {
     @Override
     public Vehicle save(String emailOuCpf, Vehicle vehicle) throws IllegalArgumentException {
 
-        Owner owner = ownerService.getByCpfOrEmail(emailOuCpf);
+        Owner owner = ownerService.getOwnerByCpfOrEmail(emailOuCpf);
 
         if (owner == null) {
             throw new IllegalArgumentException("Não existe usuário com o email ou cpf: " + emailOuCpf);
@@ -69,7 +69,7 @@ public class VehicleService implements IVehicleService {
 
         owner.addVehicle(newVehicle);
 
-        ownerService.update(owner);
+        ownerService.updateOwner(owner);
 
         return newVehicle;
 
@@ -99,7 +99,7 @@ public class VehicleService implements IVehicleService {
 
     @Override
     public Set<Vehicle> getVehiclesByOwner(String emailOuCpf) {
-        Optional<Owner> optional = Optional.ofNullable(ownerService.getByCpfOrEmail(emailOuCpf));
+        Optional<Owner> optional = Optional.ofNullable(ownerService.getOwnerByCpfOrEmail(emailOuCpf));
 
         if (optional.isPresent()) {
             Set<Vehicle> vehicles = optional.get().getVehicles();
