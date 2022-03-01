@@ -1,6 +1,8 @@
 package com.github.gpm22.API_Veiculos.Controllers;
 
+import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
+import com.github.gpm22.API_Veiculos.Services.IOwnerService;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,18 +22,25 @@ public class VehicleController {
     @Autowired
     private IVehicleService vehicleService;
 
+    @Autowired
+    private IOwnerService ownerService;
+
     @PostMapping("/cadastrar/{email_ou_cpf}")
     public ResponseEntity createVehicle(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Vehicle vehicle){
         try {
             logger.info("O usuário com "  + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf + " solicita o cadastro do veículo " + vehicle  );
 
-            Vehicle newVehicle = vehicleService.save(emailOuCpf, vehicle);
+            Owner owner = ownerService.getOwnerByCpfOrEmail(emailOuCpf);
 
-            logger.info("Cadastro realizado com sucesso do veículo: " + newVehicle);
+            vehicleService.verifyVehicleInfo(vehicle);
+
+            Vehicle addedVehicle = vehicleService.addVehicleToOwner(owner, vehicle);
+
+            logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
 
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(newVehicle);
+                    .body(addedVehicle);
 
         } catch (IllegalArgumentException e){
             logger.error("Erro ao cadastrar veículo: " + vehicle);
@@ -47,7 +56,7 @@ public class VehicleController {
         try {
             logger.info("Solicitando lista de veículos do usuário com "  + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
-            Set<Vehicle> vehicles = vehicleService.getVehiclesByOwner(emailOuCpf);
+            Set<Vehicle> vehicles = vehicleService.getOwnerVehiclesByEmailOrCpf(emailOuCpf);
 
             logger.info("Retornado veículos do usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf + ": " + vehicles);
 

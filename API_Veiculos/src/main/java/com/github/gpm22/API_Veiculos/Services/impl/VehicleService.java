@@ -9,6 +9,7 @@ import com.github.gpm22.API_Veiculos.Utils.Commons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,14 +26,42 @@ public class VehicleService implements IVehicleService {
     @Autowired
     private ApiFipeClient apiFipeClient;
 
+    private String[] vehicleTypes = {"carros", "motos", "caminhoes"};
+
     @Override
-    public Vehicle save(String emailOuCpf, Vehicle vehicle) throws IllegalArgumentException {
+    public Vehicle addVehicleToOwner(Owner owner, Vehicle vehicle) throws IllegalArgumentException {
 
-        Owner owner = ownerService.getOwnerByCpfOrEmail(emailOuCpf);
+        Vehicle existingVehicle = vehicleRepository.findByModelAndYear(vehicle.getModel(), vehicle.getYear());
 
-        if (owner == null) {
-            throw new IllegalArgumentException("Não existe usuário com o email ou cpf: " + emailOuCpf);
+        if(existingVehicle == null){
+            return addNewVehicleToOwner(owner ,vehicle);
         }
+
+        if(owner.getVehicles().contains(existingVehicle)){
+            throw new IllegalArgumentException("O usuário com cpf " + owner.getCpf() + " já possui esse veículo cadastrado " + existingVehicle);
+        }
+
+        return addExistingVehicleToOwner(owner, existingVehicle);
+    }
+
+    private Vehicle addNewVehicleToOwner(Owner owner ,Vehicle vehicle){
+        vehicle.setRotationDay(Commons.rotationDay(vehicle.getYear()));
+        vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
+        vehicle.setPrice(this.getFipePrice(vehicle));
+        owner.addVehicle(vehicle);
+
+        return vehicleRepository.save(vehicle);
+    }
+
+    private Vehicle addExistingVehicleToOwner(Owner owner, Vehicle vehicle){
+        vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
+        owner.addVehicle(vehicle);
+        ownerService.saveOrUpdateOwner(owner);
+        return vehicle;
+    }
+
+    @Override
+    public void verifyVehicleInfo(Vehicle vehicle) throws IllegalArgumentException {
 
         if (vehicle.getBrand().equals("") || vehicle.getBrand() == null) {
             throw new IllegalArgumentException("Parâmetro marca não pode ser vazio!");
@@ -47,32 +76,8 @@ public class VehicleService implements IVehicleService {
         }
 
         if (vehicle.getType().equals("") || vehicle.getType() == null) {
-            throw new IllegalArgumentException("Parâmetro tipo não pode ser vazio!\n Deve ser: carros, motos ou caminhoes.");
+            throw new IllegalArgumentException("Parâmetro tipo não pode ser vazio!\n Deve ser: " + vehicleTypes);
         }
-
-        Vehicle newVehicle = vehicleRepository.findByModelAndYear(vehicle.getModel(), vehicle.getYear());
-
-        if(newVehicle == null){
-            vehicle.setRotationDay(Commons.rotationDay(vehicle.getYear()));
-            vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
-            vehicle.setPrice(this.getFipePrice(vehicle));
-            owner.addVehicle(vehicle);
-
-            return vehicleRepository.save(vehicle);
-        }
-
-        if(owner.getVehicles().contains(newVehicle)){
-            throw new IllegalArgumentException("O usuário com cpf " + owner.getCpf() + " já possui esse veículo cadastrado " + newVehicle);
-        }
-
-        newVehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
-
-        owner.addVehicle(newVehicle);
-
-        ownerService.updateOwner(owner);
-
-        return newVehicle;
-
     }
 
     private String getFipePrice(Vehicle vehicle) {
@@ -98,25 +103,17 @@ public class VehicleService implements IVehicleService {
     }
 
     @Override
-    public Set<Vehicle> getVehiclesByOwner(String emailOuCpf) {
-        Optional<Owner> optional = Optional.ofNullable(ownerService.getOwnerByCpfOrEmail(emailOuCpf));
-
-        if (optional.isPresent()) {
-            Set<Vehicle> vehicles = optional.get().getVehicles();
-            vehicles.forEach(n -> n.setRotationActive(Commons.isRotationActive(n.getRotationDay())));
-            return vehicles;
-        } else {
-            throw new IllegalArgumentException("Não existe usuário com o " + (emailOuCpf.contains("@") ? "email" : "cpf") + ": " + emailOuCpf);
-        }
+    public Set<Vehicle> getOwnerVehiclesByEmailOrCpf(String emailOrCpf) throws IllegalArgumentException{
+        Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
+        Set<Vehicle> vehicles = owner.getVehicles();
+        Commons.updateVehiclesRotationActive(vehicles);
+        return vehicles;
     }
 
     @Override
-    public List<Vehicle> updatePrices(){
-
+    public List<Vehicle> updateVehiclesPrices(){
         List<Vehicle> vehicles = vehicleRepository.findAll();
-
         vehicles.forEach(vehicle -> vehicle.setPrice(this.getFipePrice(vehicle)));
-
         return vehicleRepository.saveAll(vehicles);
     }
 }
