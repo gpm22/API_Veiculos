@@ -5,6 +5,7 @@ import com.github.gpm22.API_Veiculos.Services.IOwnerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,16 @@ public class OwnerController {
     @Autowired
     private IOwnerService ownerService;
 
+    @RequestMapping(method = RequestMethod.OPTIONS)
+    public ResponseEntity<String> getOptions(){
+        return ResponseEntity
+                .ok()
+                .allow(HttpMethod.POST ,HttpMethod.OPTIONS)
+                .build();
+    }
+
     @PostMapping
-    public ResponseEntity createOwner(@RequestBody Owner owner) {
+    public ResponseEntity<?> createOwner(@RequestBody Owner owner) {
         try {
             logger.info("Iniciando cadastro do usuario: " + owner);
             ownerService.validateNewOwnerInformation(owner);
@@ -36,8 +45,16 @@ public class OwnerController {
         }
     }
 
+    @RequestMapping(value="/{email_ou_cpf}", method = RequestMethod.OPTIONS)
+    public ResponseEntity<String> getOwnerOptions(){
+        return ResponseEntity
+                .ok()
+                .allow(HttpMethod.GET, HttpMethod.DELETE, HttpMethod.PUT, HttpMethod.OPTIONS)
+                .build();
+    }
+
     @PutMapping("/{email_ou_cpf}")
-    public ResponseEntity updateOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Owner updatedOwner) {
+    public ResponseEntity<?> updateOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Owner updatedOwner) {
         try {
             logger.info("Solicitado alteração do usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
@@ -64,7 +81,7 @@ public class OwnerController {
     }
 
     @DeleteMapping("/{email_ou_cpf}")
-    public ResponseEntity deleteOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf) {
+    public ResponseEntity<?> deleteOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf) {
         try {
             logger.info("Solicitado exclusão usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
@@ -86,7 +103,7 @@ public class OwnerController {
     }
 
     @GetMapping("/{email_ou_cpf}")
-    public ResponseEntity getOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf) {
+    public ResponseEntity<?> getOwner(@PathVariable(value="email_ou_cpf") String emailOuCpf) {
         try {
             logger.info("Solicitado usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
@@ -106,4 +123,5 @@ public class OwnerController {
                     .body(e.getMessage());
         }
     }
+
 }

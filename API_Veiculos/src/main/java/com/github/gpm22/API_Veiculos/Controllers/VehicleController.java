@@ -7,6 +7,7 @@ import com.github.gpm22.API_Veiculos.Services.IVehicleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,16 @@ public class VehicleController {
     @Autowired
     private IOwnerService ownerService;
 
+    @RequestMapping(value = "/cadastrar/{email_ou_cpf}", method = RequestMethod.OPTIONS)
+    public ResponseEntity<String> getRegisterOptions(){
+        return ResponseEntity
+                .ok()
+                .allow(HttpMethod.POST ,HttpMethod.OPTIONS)
+                .build();
+    }
+
     @PostMapping("/cadastrar/{email_ou_cpf}")
-    public ResponseEntity createVehicle(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Vehicle vehicle){
+    public ResponseEntity<?> createVehicle(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Vehicle vehicle){
         try {
             logger.info("O usuário com "  + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf + " solicita o cadastro do veículo " + vehicle  );
 
@@ -51,8 +60,16 @@ public class VehicleController {
         }
     }
 
-    @GetMapping("lista-completa/{email_ou_cpf}")
-    public ResponseEntity getVehicles(@PathVariable(value="email_ou_cpf") String emailOuCpf){
+    @RequestMapping(value = "/lista-completa/{email_ou_cpf}", method = RequestMethod.OPTIONS)
+    public ResponseEntity<String> getListOptions(){
+        return ResponseEntity
+                .ok()
+                .allow(HttpMethod.GET ,HttpMethod.OPTIONS)
+                .build();
+    }
+
+    @GetMapping("/lista-completa/{email_ou_cpf}")
+    public ResponseEntity<?> getVehicles(@PathVariable(value="email_ou_cpf") String emailOuCpf){
         try {
             logger.info("Solicitando lista de veículos do usuário com "  + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
 
