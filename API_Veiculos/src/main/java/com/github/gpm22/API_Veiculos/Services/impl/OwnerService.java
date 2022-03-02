@@ -31,6 +31,20 @@ public class OwnerService implements IOwnerService {
         verifyIfEmailIsUnique(owner);
     }
 
+    @Override
+    public Vehicle addVehicleToOwner(Owner owner, Vehicle vehicle) throws IllegalArgumentException {
+        owner.addVehicle(vehicle);
+        saveOrUpdateOwner(owner);
+        return vehicle;
+    }
+
+    @Override
+    public Vehicle removeVehicleFromOwner(Owner owner, Vehicle vehicle) {
+        owner.getVehicles().remove(vehicle);
+        saveOrUpdateOwner(owner);
+        return vehicle;
+    }
+
     private void validateOwnerInformation(Owner owner) throws IllegalArgumentException{
         validateOwnerName(owner.getName());
         validateOwnerCpf(owner.getCpf());
