@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -147,5 +148,16 @@ public class VehicleService implements IVehicleService {
         List<Vehicle> vehicles = vehicleRepository.findAll();
         vehicles.forEach(vehicle -> vehicle.setPrice(this.getFipePrice(vehicle)));
         return vehicleRepository.saveAll(vehicles);
+    }
+
+    @Override
+    public Vehicle getVehicleById(long vehicleId) {
+        Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
+
+        if (vehicle.isPresent()) {
+            return vehicle.get();
+        } else {
+            throw new IllegalArgumentException("Não existe veículo com id: " + vehicleId);
+        }
     }
 }

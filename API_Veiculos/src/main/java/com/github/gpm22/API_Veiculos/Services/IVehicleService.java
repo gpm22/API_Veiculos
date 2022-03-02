@@ -16,5 +16,5 @@ public interface IVehicleService {
 
     public List<Vehicle> updateVehiclesPrices();
 
-    Vehicle getVehicleById(String vehicleId);
+    Vehicle getVehicleById(long vehicleId);
 }
