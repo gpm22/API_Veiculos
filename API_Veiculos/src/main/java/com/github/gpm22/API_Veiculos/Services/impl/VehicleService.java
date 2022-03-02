@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 @Service
@@ -65,19 +66,34 @@ public class VehicleService implements IVehicleService {
         String codeModel = getCodeModel(type, codeBrand, vehicle.getModel());
         String fipeYear = getFipeYear(type, codeBrand, codeModel, vehicle.getYear());
 
-        return apiFipeClient.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
+        try {
+            return apiFipeClient.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
+        } catch (NoSuchElementException e){
+            throw new IllegalArgumentException("o parâmetro ano não condiz com o que está na API FIPE!");
+        }
     }
 
     private String getCodeBrand(String type, String vehicleBrand) {
-        return apiFipeClient.getBrandList(type).filter(brand -> brand.getNome().equals(vehicleBrand)).findAny().get().getCodigo();
+        try {
+            return apiFipeClient.getBrandList(type).filter(brand -> brand.getNome().equals(vehicleBrand)).findAny().get().getCodigo();
+        } catch (NoSuchElementException e) {
+            throw new IllegalArgumentException("O parâmetro marca não condiz com o que está na API FIPE!");
+        }
     }
 
     private String getCodeModel(String type, String codeBrand, String vehicleModel) {
-        return apiFipeClient.getModelList(type, codeBrand).sequential().filter(model -> model.getNome().equals(vehicleModel)).findAny().get().getCodigo();
+        try {
+            return apiFipeClient.getModelList(type, codeBrand).sequential().filter(model -> model.getNome().equals(vehicleModel)).findAny().get().getCodigo();
+        } catch (NoSuchElementException e){
+            throw new IllegalArgumentException("o parâmetro modelo não condiz com o que está na API FIPE!");
+        }
     }
-
     private String getFipeYear(String type, String codeBrand, String codeModel, String vehicleYear) {
-        return apiFipeClient.getYearlList(type, codeBrand, codeModel).filter(year -> year.getNome().equals(vehicleYear)).findAny().get().getCodigo();
+        try {
+            return apiFipeClient.getYearlList(type, codeBrand, codeModel).filter(year -> year.getNome().equals(vehicleYear)).findAny().get().getCodigo();
+        } catch (NoSuchElementException e){
+            throw new IllegalArgumentException("o parâmetro ano não condiz com o que está na API FIPE!");
+        }
     }
 
     @Override
