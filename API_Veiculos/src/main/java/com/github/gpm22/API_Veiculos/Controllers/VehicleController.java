@@ -26,20 +26,40 @@ public class VehicleController {
     @Autowired
     private IOwnerService ownerService;
 
-    @RequestMapping(value = "/cadastrar/{email_ou_cpf}", method = RequestMethod.OPTIONS)
-    public ResponseEntity<String> getRegisterOptions(){
+    @RequestMapping(value = "/{email_ou_cpf}", method = RequestMethod.OPTIONS)
+    public ResponseEntity<String> getOptions(){
         return ResponseEntity
                 .ok()
-                .allow(HttpMethod.POST ,HttpMethod.OPTIONS)
+                .allow(HttpMethod.POST, HttpMethod.GET ,HttpMethod.OPTIONS)
                 .build();
     }
 
-    @PostMapping("/cadastrar/{email_ou_cpf}")
-    public ResponseEntity<?> createVehicle(@PathVariable(value="email_ou_cpf") String emailOuCpf, @RequestBody Vehicle vehicle){
+    @GetMapping("/{vehicle_id}")
+    public ResponseEntity<?> getVehicleById(@PathVariable(value="vehicle_id") String vehicleId){
         try {
-            logger.info("O usuário com "  + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf + " solicita o cadastro do veículo " + vehicle  );
+            logger.info("Solicitado o veículo com id: " + vehicleId);
 
-            Owner owner = ownerService.getOwnerByCpfOrEmail(emailOuCpf);
+            Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(vehicle);
+
+        } catch (IllegalArgumentException e){
+            logger.error("Erro ao retornar o veículo de id: " + vehicleId);
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{email_ou_cpf}")
+    public ResponseEntity<?> addVehicleToOwner(@PathVariable(value="email_ou_cpf") String emailOrCpf, @RequestBody Vehicle vehicle){
+        try {
+            logger.info("O usuário com "  + (emailOrCpf.contains("@")? "email " : "cpf ") + emailOrCpf + " solicita o cadastro do veículo " + vehicle  );
+
+            Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
             vehicleService.verifyVehicleInfo(vehicle);
 
@@ -53,6 +73,24 @@ public class VehicleController {
 
         } catch (IllegalArgumentException e){
             logger.error("Erro ao cadastrar veículo: " + vehicle);
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/registro/{email_ou_cpf}/{vehicle_id}")
+    public ResponseEntity<?> removeVehicleFromOwner(
+            @PathVariable(value="email_ou_cpf") String emailOrCpf,
+            @PathVariable(value="vehicle_id") String vehicleId){
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body("");
+
+        } catch (IllegalArgumentException e){
+            logger.error("Erro ao remover o veículo: " + "" + " do usuário: " +"");
             e.printStackTrace();
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

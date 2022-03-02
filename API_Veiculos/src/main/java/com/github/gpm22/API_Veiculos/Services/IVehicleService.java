@@ -15,4 +15,6 @@ public interface IVehicleService {
     public Set<Vehicle> getOwnerVehiclesByEmailOrCpf(String emailOuCpf);
 
     public List<Vehicle> updateVehiclesPrices();
+
+    Vehicle getVehicleById(String vehicleId);
 }
