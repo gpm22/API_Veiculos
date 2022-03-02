@@ -34,7 +34,7 @@ public class VehicleService implements IVehicleService {
         Vehicle existingVehicle = vehicleRepository.findByModelAndYear(vehicle.getModel(), vehicle.getYear());
 
         if(existingVehicle == null){
-            return addNewVehicleToOwner(owner ,vehicle);
+            return addNewVehicleToOwner(owner, vehicle);
         }
 
         if(owner.getVehicles().contains(existingVehicle)){
@@ -47,7 +47,7 @@ public class VehicleService implements IVehicleService {
     private Vehicle addNewVehicleToOwner(Owner owner ,Vehicle vehicle){
         vehicle.setRotationDay(Commons.rotationDay(vehicle.getYear()));
         vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
-        vehicle.setPrice(this.getFipePrice(vehicle));
+        vehicle.setPrice(getFipePrice(vehicle));
         owner.addVehicle(vehicle);
 
         return vehicleRepository.save(vehicle);
@@ -58,26 +58,6 @@ public class VehicleService implements IVehicleService {
         owner.addVehicle(vehicle);
         ownerService.saveOrUpdateOwner(owner);
         return vehicle;
-    }
-
-    @Override
-    public void verifyVehicleInfo(Vehicle vehicle) throws IllegalArgumentException {
-
-        if (vehicle.getBrand().equals("") || vehicle.getBrand() == null) {
-            throw new IllegalArgumentException("Parâmetro marca não pode ser vazio!");
-        }
-
-        if (vehicle.getModel().equals("") || vehicle.getModel() == null) {
-            throw new IllegalArgumentException("Parâmetro modelo não pode ser vazio!");
-        }
-
-        if (vehicle.getYear().equals("") || vehicle.getYear() == null) {
-            throw new IllegalArgumentException("Parâmetro ano não pode ser vazio!");
-        }
-
-        if (vehicle.getType().equals("") || vehicle.getType() == null) {
-            throw new IllegalArgumentException("Parâmetro tipo não pode ser vazio!\n Deve ser: " + vehicleTypes);
-        }
     }
 
     private String getFipePrice(Vehicle vehicle) {
@@ -100,6 +80,44 @@ public class VehicleService implements IVehicleService {
 
     private String getFipeYear(String type, String codeBrand, String codeModel, String vehicleYear) {
         return apiFipeClient.getYearlList(type, codeBrand, codeModel).filter(year -> year.getNome().equals(vehicleYear)).findAny().get().getCodigo();
+    }
+
+    @Override
+    public void verifyVehicleInfo(Vehicle vehicle) throws IllegalArgumentException {
+        verifyVehicleBrand(vehicle.getBrand());
+        verifyVehicleModel(vehicle.getModel());
+        verifyVehicleYear(vehicle.getYear());
+        verifyVehicleType(vehicle.getType());
+    }
+
+    private void verifyVehicleBrand(String brand) {
+        verifyIfStringIsEmpty("marca", brand);
+    }
+
+    private void verifyVehicleModel(String model) {
+        verifyIfStringIsEmpty("modelo", model);
+    }
+
+    private void verifyVehicleYear(String year) {
+        verifyIfStringIsEmpty("ano", year);
+    }
+
+    private void verifyVehicleType(String type) {
+        try {
+            verifyIfStringIsEmpty("tipo", type);
+        } catch (IllegalArgumentException e){
+            throw new IllegalArgumentException( e.getMessage() + "\nDeve ser: " + vehicleTypes);
+        }
+    }
+
+    private void verifyIfStringIsEmpty(String attribute, String value){
+        if(value == null){
+            throw new IllegalArgumentException("Parâmetro " + attribute + " não pode ser vazio!");
+        }
+
+        if(value.isEmpty()) {
+            throw new IllegalArgumentException("Parâmetro " + attribute + " não pode ser vazio!");
+        }
     }
 
     @Override
