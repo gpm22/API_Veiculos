@@ -156,8 +156,15 @@ public class VehicleService implements IVehicleService {
 
     @Override
     public void removeOwnerFromVehicle(Vehicle removedVehicle, Owner owner) {
+        verifyIfVehicleHasOwner(removedVehicle, owner);
         removedVehicle.getOwners().remove(owner);
         saveOrUpdateVehicle(removedVehicle);
+    }
+
+    private void verifyIfVehicleHasOwner(Vehicle vehicle, Owner owner) {
+        if(!vehicle.getOwners().contains(owner)){
+            throw new IllegalArgumentException("O veículo de id " + vehicle.getId() + " não possui o usuário de cpf: " + owner.getCpf());
+        }
     }
 
     @Override

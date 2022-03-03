@@ -39,9 +39,16 @@ public class OwnerService implements IOwnerService {
 
     @Override
     public Vehicle removeVehicleFromOwner(Owner owner, Vehicle vehicle) {
+        verifyIfOwnerHasVehicle(owner, vehicle);
         owner.getVehicles().remove(vehicle);
         saveOrUpdateOwner(owner);
         return vehicle;
+    }
+
+    private void verifyIfOwnerHasVehicle(Owner owner, Vehicle vehicle) {
+        if(!owner.getVehicles().contains(vehicle)){
+            throw new IllegalArgumentException("O usuário de cpf " + owner.getCpf() + " não possui o veículo de id: " + vehicle.getId());
+        }
     }
 
     private void validateOwnerInformation(Owner owner) throws IllegalArgumentException{
