@@ -73,7 +73,7 @@ public class VehicleController {
         }
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
         try {
             logger.info("Solicitado o cadastro do veículo " + vehicle);
@@ -82,7 +82,7 @@ public class VehicleController {
             vehicleService.verifyIfVehicleAlreadyExists(vehicle);
             vehicleService.setVehicleInformations(vehicle);
 
-            Vehicle addedVehicle = vehicleService.createVehicle(vehicle);
+            Vehicle addedVehicle = vehicleService.saveOrUpdateVehicle(vehicle);
 
             logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
 
