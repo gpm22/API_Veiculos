@@ -46,6 +46,13 @@ public class Owner {
         this.birthDate = birthDate;
     }
 
+    public void updateInfoWith(Owner updatedOwner){
+        this.setCpf(updatedOwner.getCpf());
+        this.setBirthDate(updatedOwner.getBirthDate());
+        this.setEmail(updatedOwner.getEmail());
+        this.setName(updatedOwner.getName());
+    }
+
     public long getId() {
         return id;
     }

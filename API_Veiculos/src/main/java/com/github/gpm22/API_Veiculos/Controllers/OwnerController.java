@@ -66,7 +66,7 @@ public class OwnerController {
             Owner owner = ownerService.getOwnerByCpfOrEmail(emailOuCpf);
 
             ownerService.validateUpdatedOwnerInformation(owner, updatedOwner);
-            ownerService.updateOwnerInfo(owner, updatedOwner);
+            owner.updateInfoWith(updatedOwner);
 
             Owner savedOwner = ownerService.saveOrUpdateOwner(owner);
 

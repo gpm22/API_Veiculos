@@ -11,8 +11,6 @@ public interface IOwnerService {
 
     void validateUpdatedOwnerInformation(Owner owner, Owner updatedOwner);
 
-    void updateOwnerInfo(Owner owner, Owner updatedOwner);
-
     Owner deleteOwnerByCpfOrEmail(String emailOuCpf);
 
     void validateNewOwnerInformation(Owner owner) throws IllegalArgumentException;

@@ -124,14 +124,6 @@ public class OwnerService implements IOwnerService {
     }
 
     @Override
-    public void updateOwnerInfo(Owner owner, Owner updatedOwner) {
-        owner.setCpf(updatedOwner.getCpf());
-        owner.setBirthDate(updatedOwner.getBirthDate());
-        owner.setEmail(updatedOwner.getEmail());
-        owner.setName(updatedOwner.getName());
-    }
-
-    @Override
     public Owner deleteOwnerByCpfOrEmail(String emailOuCpf) throws IllegalArgumentException {
             Owner owner = this.getOwnerByCpfOrEmail(emailOuCpf);
             ownerRepository.delete(owner);
