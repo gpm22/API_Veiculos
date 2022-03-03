@@ -111,17 +111,22 @@ public class OwnerService implements IOwnerService {
     @Override
     public void validateUpdatedOwnerInformation(Owner owner, Owner updatedOwner){
         validateOwnerInformation(updatedOwner);
-        compareOwnerAndUpdatedOwner(owner,updatedOwner);
+        validateCpfChangedUniqueness(owner, updatedOwner);
+        validateEmailChangedUniqueness(owner,updatedOwner);
     }
 
-    private void compareOwnerAndUpdatedOwner(Owner owner, Owner updatedOwner) {
+    private void validateCpfChangedUniqueness(Owner owner, Owner updatedOwner) {
         if(!owner.getCpf().equals(updatedOwner.getCpf())){
             verifyIfCpfIsUnique(updatedOwner);
         }
+    }
+
+    private void validateEmailChangedUniqueness(Owner owner, Owner updatedOwner) {
         if(!owner.getEmail().equals(updatedOwner.getEmail())){
             verifyIfEmailIsUnique(updatedOwner);
         }
     }
+
 
     @Override
     public Owner deleteOwnerByCpfOrEmail(String emailOuCpf) throws IllegalArgumentException {
