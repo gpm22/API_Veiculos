@@ -9,7 +9,9 @@ import com.github.gpm22.API_Veiculos.Utils.Commons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,7 +27,9 @@ public class VehicleService implements IVehicleService {
     @Autowired
     private ApiFipeClient apiFipeClient;
 
-    private final String[] vehicleTypes = {"carros", "motos", "caminhoes"};
+    private final String URI_BASE_API_FIPE = "https://parallelum.com.br/fipe/api/v1/";
+
+    private final Set<String> vehicleTypes = new HashSet<>(Arrays.asList("carros", "motos", "caminhoes", "fipe"));
 
     @Override
     public Vehicle saveOrUpdateVehicle(Vehicle vehicle) throws IllegalArgumentException {
@@ -57,39 +61,39 @@ public class VehicleService implements IVehicleService {
 
     private String getFipePrice(Vehicle vehicle) {
 
-        String type = vehicle.getType();
-        String codeBrand = getCodeBrand(type, vehicle.getBrand());
-        String codeModel = getCodeModel(type, codeBrand, vehicle.getModel());
-        String fipeYear = getFipeYear(type, codeBrand, codeModel, vehicle.getYear());
+        String type = vehicle.getType().toLowerCase();
+        String codeBrand = getCodeBrand(type, vehicle.getBrand().toLowerCase());
+        String codeModel = getCodeModel(type, codeBrand, vehicle.getModel().toLowerCase());
+        String fipeYear = getFipeYear(type, codeBrand, codeModel, vehicle.getYear().toLowerCase());
 
-        try {
-            return apiFipeClient.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
-        } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("o parâmetro ano não condiz com o que está na API FIPE!");
-        }
+        return apiFipeClient.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
+
     }
 
+
     private String getCodeBrand(String type, String vehicleBrand) {
+
         try {
-            return apiFipeClient.getBrandList(type).filter(brand -> brand.getNome().equals(vehicleBrand)).findAny().get().getCodigo();
+            return apiFipeClient.getBrandList(type).filter(brand -> brand.getNome().toLowerCase().equals(vehicleBrand)).findAny().get().getCodigo();
         } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("O parâmetro marca não condiz com o que está na API FIPE!");
+            e.printStackTrace();
+            throw new IllegalArgumentException("O parâmetro marca não condiz com o que está na API FIPE!\n Consultar valores possíveis em: " + URI_BASE_API_FIPE +type+"/marcas");
         }
     }
 
     private String getCodeModel(String type, String codeBrand, String vehicleModel) {
         try {
-            return apiFipeClient.getModelList(type, codeBrand).sequential().filter(model -> model.getNome().equals(vehicleModel)).findAny().get().getCodigo();
+            return apiFipeClient.getModelList(type, codeBrand).sequential().filter(model -> model.getNome().toLowerCase().equals(vehicleModel)).findAny().get().getCodigo();
         } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("o parâmetro modelo não condiz com o que está na API FIPE!");
+            throw new IllegalArgumentException("O parâmetro modelo não condiz com o que está na API FIPE! \n Consultar valores possíveis em: " + URI_BASE_API_FIPE +type+ "/marcas/" +codeBrand+"/modelos");
         }
     }
 
     private String getFipeYear(String type, String codeBrand, String codeModel, String vehicleYear) {
         try {
-            return apiFipeClient.getYearlList(type, codeBrand, codeModel).filter(year -> year.getNome().equals(vehicleYear)).findAny().get().getCodigo();
+            return apiFipeClient.getYearlList(type, codeBrand, codeModel).filter(year -> year.getNome().toLowerCase().equals(vehicleYear)).findAny().get().getCodigo();
         } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("o parâmetro ano não condiz com o que está na API FIPE!");
+            throw new IllegalArgumentException("O parâmetro ano não condiz com o que está na API FIPE! \n Consultar valores possíveis em: " + URI_BASE_API_FIPE +type+ "/marcas/" +codeBrand+ "/modelos/" +codeModel+"/anos");
         }
     }
 
@@ -119,10 +123,8 @@ public class VehicleService implements IVehicleService {
     }
 
     private void verifyVehicleType(String type) {
-        try {
-            verifyIfStringIsEmpty("tipo", type);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e.getMessage() + "\nDeve ser: " + vehicleTypes);
+        if(!vehicleTypes.contains(type)){
+            throw new IllegalArgumentException("O parâmetro tipo não condiz com o que está na API FIPE!\nDeve ser: " + vehicleTypes);
         }
     }
 
