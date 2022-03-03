@@ -3,18 +3,28 @@ package com.github.gpm22.API_Veiculos.Services;
 import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface IVehicleService {
 
-    Vehicle addVehicleToOwner(Owner owner, Vehicle vehicle) throws IllegalArgumentException;
+    Vehicle saveOrUpdateVehicle(Vehicle vehicle) throws IllegalArgumentException;
+
+    int deleteVehiclesWithoutOwners(Vehicle vehicle);
+
+    void verifyIfVehicleAlreadyExists(Vehicle vehicle);
+
+    void setVehicleInformations(Vehicle vehicle);
 
     void verifyVehicleInfo(Vehicle vehicle) throws IllegalArgumentException;
 
-    public Set<Vehicle> getOwnerVehiclesByEmailOrCpf(String emailOuCpf);
+    Collection<Vehicle> getAllVehicles();
 
-    public List<Vehicle> updateVehiclesPrices();
+    int updateVehiclesPrices();
 
     Vehicle getVehicleById(long vehicleId);
+
+    void removeOwnerFromVehicle(Vehicle removedVehicle, Owner owner);
+
+    void addOwnerToVehicle(Vehicle addedVehicle, Owner owner);
 }
