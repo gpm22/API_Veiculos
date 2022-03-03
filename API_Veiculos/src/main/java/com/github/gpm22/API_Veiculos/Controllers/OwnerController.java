@@ -148,6 +148,8 @@ public class OwnerController {
 
             Vehicle addedVehicle = ownerService.addVehicleToOwner(owner, vehicle);
 
+            vehicleService.addOwnerToVehicle(addedVehicle, owner);
+
             logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
 
             return ResponseEntity
@@ -174,6 +176,8 @@ public class OwnerController {
             Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
 
             Vehicle removedVehicle = ownerService.removeVehicleFromOwner(owner, vehicle);
+
+            vehicleService.removeOwnerFromVehicle(removedVehicle, owner);
 
             logger.info("Remoção realizada com sucesso do veículo: " + removedVehicle);
 
