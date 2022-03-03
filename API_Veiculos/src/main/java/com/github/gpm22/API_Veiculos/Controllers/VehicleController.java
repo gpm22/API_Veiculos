@@ -1,6 +1,5 @@
 package com.github.gpm22.API_Veiculos.Controllers;
 
-import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Services.IOwnerService;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
@@ -12,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/veiculo")
@@ -26,16 +25,36 @@ public class VehicleController {
     @Autowired
     private IOwnerService ownerService;
 
-    @RequestMapping(value = "/{email_ou_cpf}", method = RequestMethod.OPTIONS)
-    public ResponseEntity<String> getOptions(){
+    @RequestMapping(value = "/{id}", method = RequestMethod.OPTIONS)
+    public ResponseEntity<String> getOptions() {
         return ResponseEntity
                 .ok()
-                .allow(HttpMethod.POST, HttpMethod.GET ,HttpMethod.OPTIONS)
+                .allow(HttpMethod.POST, HttpMethod.GET, HttpMethod.OPTIONS)
                 .build();
     }
 
+    @GetMapping
+    public ResponseEntity<?> getVehicles() {
+        try {
+            logger.info("Solicitados todos os veículos.");
+
+            Collection<Vehicle> vehicles = vehicleService.getAllVehicles();
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(vehicles);
+
+        } catch (IllegalArgumentException e) {
+            logger.error("Erro ao retornar todos os veículos");
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
+        }
+    }
+
     @GetMapping("/{vehicle_id}")
-    public ResponseEntity<?> getVehicleById(@PathVariable(value="vehicle_id") String vehicleId){
+    public ResponseEntity<?> getVehicleById(@PathVariable(value = "vehicle_id") long vehicleId) {
         try {
             logger.info("Solicitado o veículo com id: " + vehicleId);
 
@@ -45,7 +64,7 @@ public class VehicleController {
                     .status(HttpStatus.OK)
                     .body(vehicle);
 
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             logger.error("Erro ao retornar o veículo de id: " + vehicleId);
             e.printStackTrace();
             return ResponseEntity
@@ -54,16 +73,16 @@ public class VehicleController {
         }
     }
 
-    @PostMapping("/{email_ou_cpf}")
-    public ResponseEntity<?> addVehicleToOwner(@PathVariable(value="email_ou_cpf") String emailOrCpf, @RequestBody Vehicle vehicle){
+    @PostMapping()
+    public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
         try {
-            logger.info("O usuário com "  + (emailOrCpf.contains("@")? "email " : "cpf ") + emailOrCpf + " solicita o cadastro do veículo " + vehicle  );
-
-            Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
+            logger.info("Solicitado o cadastro do veículo " + vehicle);
 
             vehicleService.verifyVehicleInfo(vehicle);
+            vehicleService.verifyIfVehicleAlreadyExists(vehicle);
+            vehicleService.setVehicleInformations(vehicle);
 
-            Vehicle addedVehicle = vehicleService.addVehicleToOwner(owner, vehicle);
+            Vehicle addedVehicle = vehicleService.createVehicle(vehicle);
 
             logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
 
@@ -71,7 +90,7 @@ public class VehicleController {
                     .status(HttpStatus.CREATED)
                     .body(addedVehicle);
 
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             logger.error("Erro ao cadastrar veículo: " + vehicle);
             e.printStackTrace();
             return ResponseEntity
@@ -80,51 +99,4 @@ public class VehicleController {
         }
     }
 
-    @DeleteMapping("/registro/{email_ou_cpf}/{vehicle_id}")
-    public ResponseEntity<?> removeVehicleFromOwner(
-            @PathVariable(value="email_ou_cpf") String emailOrCpf,
-            @PathVariable(value="vehicle_id") String vehicleId){
-        try {
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body("");
-
-        } catch (IllegalArgumentException e){
-            logger.error("Erro ao remover o veículo: " + "" + " do usuário: " +"");
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
-    }
-
-    @RequestMapping(value = "/lista-completa/{email_ou_cpf}", method = RequestMethod.OPTIONS)
-    public ResponseEntity<String> getListOptions(){
-        return ResponseEntity
-                .ok()
-                .allow(HttpMethod.GET ,HttpMethod.OPTIONS)
-                .build();
-    }
-
-    @GetMapping("/lista-completa/{email_ou_cpf}")
-    public ResponseEntity<?> getVehicles(@PathVariable(value="email_ou_cpf") String emailOuCpf){
-        try {
-            logger.info("Solicitando lista de veículos do usuário com "  + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf );
-
-            Set<Vehicle> vehicles = vehicleService.getOwnerVehiclesByEmailOrCpf(emailOuCpf);
-
-            logger.info("Retornado veículos do usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf + ": " + vehicles);
-
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(vehicles);
-
-        } catch (IllegalArgumentException e){
-            logger.error("Erro ao retornar lista de veículos do usuário com " + (emailOuCpf.contains("@")? "email " : "cpf ") + emailOuCpf);
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        }
-    }
 }
