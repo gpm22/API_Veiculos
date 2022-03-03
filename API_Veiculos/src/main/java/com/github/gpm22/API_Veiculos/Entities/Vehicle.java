@@ -1,12 +1,16 @@
 package com.github.gpm22.API_Veiculos.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "vehicles")
@@ -30,10 +34,14 @@ public class Vehicle {
     private Boolean isRotationActive;
     @Column(name = "vehicle_is_price")
     private String price;
+    @JsonIgnore
+    @ManyToMany
+    private Set<Owner> owners;
 
-    public Vehicle(){}
+    public Vehicle() {
+    }
 
-    public Vehicle(String brand, String model, String year, String type){
+    public Vehicle(String brand, String model, String year, String type) {
         this.brand = brand;
         this.model = model;
         this.year = year;
@@ -52,7 +60,9 @@ public class Vehicle {
         return brand;
     }
 
-    public void setBrand(String brand) { this.brand = brand; }
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 
     public String getModel() {
         return model;
@@ -101,6 +111,10 @@ public class Vehicle {
     public void setPrice(String price) {
         this.price = price;
     }
+
+    public Set<Owner> getOwners() { return owners; }
+
+    public void setOwners(Set<Owner> owners) {this.owners = owners;}
 
     @Override
     public String toString() {
