@@ -1,7 +1,6 @@
 package com.github.gpm22.API_Veiculos.Services.impl;
 
 import com.github.gpm22.API_Veiculos.Entities.Owner;
-import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
 import com.github.gpm22.API_Veiculos.Services.IOwnerService;
 import com.github.gpm22.API_Veiculos.Utils.Commons;
@@ -28,27 +27,6 @@ public class OwnerService implements IOwnerService {
         validateOwnerInformation(owner);
         verifyIfCpfIsUnique(owner);
         verifyIfEmailIsUnique(owner);
-    }
-
-    @Override
-    public Vehicle addVehicleToOwner(Owner owner, Vehicle vehicle) throws IllegalArgumentException {
-        owner.addVehicle(vehicle);
-        saveOrUpdateOwner(owner);
-        return vehicle;
-    }
-
-    @Override
-    public Vehicle removeVehicleFromOwner(Owner owner, Vehicle vehicle) {
-        verifyIfOwnerHasVehicle(owner, vehicle);
-        owner.getVehicles().remove(vehicle);
-        saveOrUpdateOwner(owner);
-        return vehicle;
-    }
-
-    private void verifyIfOwnerHasVehicle(Owner owner, Vehicle vehicle) {
-        if(!owner.getVehicles().contains(vehicle)){
-            throw new IllegalArgumentException("O usuário de cpf " + owner.getCpf() + " não possui o veículo de id: " + vehicle.getId());
-        }
     }
 
     private void validateOwnerInformation(Owner owner) throws IllegalArgumentException{
@@ -126,7 +104,6 @@ public class OwnerService implements IOwnerService {
             verifyIfEmailIsUnique(updatedOwner);
         }
     }
-
 
     @Override
     public Owner deleteOwnerByCpfOrEmail(String emailOuCpf) throws IllegalArgumentException {

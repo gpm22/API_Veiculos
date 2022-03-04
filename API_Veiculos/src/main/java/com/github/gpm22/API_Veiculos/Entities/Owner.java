@@ -100,7 +100,15 @@ public class Owner {
     }
 
     public void addVehicle(Vehicle vehicle) {
-        this.vehicles.add(vehicle);
+        this.getVehicles().add(vehicle);
+    }
+
+    public void removeVehicle(Vehicle vehicle){
+        if(!this.getVehicles().contains(vehicle)){
+            throw new IllegalArgumentException("O usuário de cpf " + this.getCpf() + " não possui o veículo de id: " + vehicle.getId());
+        }
+
+        this.getVehicles().remove(vehicle);
     }
 
     @Override

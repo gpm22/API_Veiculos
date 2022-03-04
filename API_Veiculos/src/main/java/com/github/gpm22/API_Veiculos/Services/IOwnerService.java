@@ -14,8 +14,4 @@ public interface IOwnerService {
     Owner deleteOwnerByCpfOrEmail(String emailOuCpf);
 
     void validateNewOwnerInformation(Owner owner) throws IllegalArgumentException;
-
-    Vehicle addVehicleToOwner(Owner owner, Vehicle vehicle);
-
-    Vehicle removeVehicleFromOwner(Owner owner, Vehicle vehicle);
 }

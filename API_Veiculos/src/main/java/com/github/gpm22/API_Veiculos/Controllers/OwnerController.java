@@ -144,9 +144,10 @@ public class OwnerController {
 
             Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
-            Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+            Vehicle addedVehicle = vehicleService.getVehicleById(vehicleId);
 
-            Vehicle addedVehicle = ownerService.addVehicleToOwner(owner, vehicle);
+            owner.addVehicle(addedVehicle);
+            ownerService.saveOrUpdateOwner(owner);
 
             addedVehicle.addOwner(owner);
             vehicleService.saveOrUpdateVehicle(addedVehicle);
@@ -174,9 +175,10 @@ public class OwnerController {
 
             Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
-            Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+            Vehicle removedVehicle = vehicleService.getVehicleById(vehicleId);
 
-            Vehicle removedVehicle = ownerService.removeVehicleFromOwner(owner, vehicle);
+            owner.removeVehicle(removedVehicle);
+            ownerService.saveOrUpdateOwner(owner);
 
             removedVehicle.removeOwner(owner);
             vehicleService.saveOrUpdateVehicle(removedVehicle);
