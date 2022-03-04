@@ -3,6 +3,7 @@ package com.github.gpm22.API_Veiculos.Controllers;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Services.IOwnerService;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
+import com.github.gpm22.API_Veiculos.Utils.Commons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,67 +37,64 @@ public class VehicleController {
     @GetMapping
     public ResponseEntity<?> getVehicles() {
         try {
-            logger.info("Solicitados todos os veículos.");
-
-            Collection<Vehicle> vehicles = vehicleService.getAllVehicles();
-
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(vehicles);
-
+            return getVehiclesResponse();
         } catch (IllegalArgumentException e) {
-            logger.error("Erro ao retornar todos os veículos");
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
+            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar todos os veículos", logger);
         }
+    }
+
+    private ResponseEntity<Collection<Vehicle>> getVehiclesResponse(){
+        logger.info("Solicitados todos os veículos.");
+
+        Collection<Vehicle> vehicles = vehicleService.getAllVehicles();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(vehicles);
     }
 
     @GetMapping("/{vehicle_id}")
     public ResponseEntity<?> getVehicleById(@PathVariable(value = "vehicle_id") long vehicleId) {
         try {
-            logger.info("Solicitado o veículo com id: " + vehicleId);
-
-            Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
-
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(vehicle);
-
+            return getVehicleByIdResponse(vehicleId);
         } catch (IllegalArgumentException e) {
-            logger.error("Erro ao retornar o veículo de id: " + vehicleId);
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
+            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar o veículo de id: " + vehicleId, logger);
         }
+    }
+
+    private ResponseEntity<Vehicle> getVehicleByIdResponse(long vehicleId){
+        logger.info("Solicitado o veículo com id: " + vehicleId);
+
+        Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(vehicle);
     }
 
     @PostMapping
     public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
         try {
-            logger.info("Solicitado o cadastro do veículo " + vehicle);
-
-            vehicleService.verifyVehicleInfo(vehicle);
-            vehicleService.verifyIfVehicleAlreadyExists(vehicle);
-            vehicleService.setVehicleInformations(vehicle);
-
-            Vehicle addedVehicle = vehicleService.saveOrUpdateVehicle(vehicle);
-
-            logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
-
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(addedVehicle);
-
+            return  createVehicleResponse(vehicle);
         } catch (IllegalArgumentException e) {
-            logger.error("Erro ao cadastrar veículo: " + vehicle);
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
+            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao cadastrar veículo: " + vehicle, logger);
         }
+    }
+
+    private ResponseEntity<Vehicle> createVehicleResponse(Vehicle vehicle){
+        logger.info("Solicitado o cadastro do veículo " + vehicle);
+
+        vehicleService.verifyVehicleInfo(vehicle);
+        vehicleService.verifyIfVehicleAlreadyExists(vehicle);
+        vehicleService.setVehicleInformationsAboutRotationAndPrice(vehicle);
+
+        Vehicle addedVehicle = vehicleService.saveOrUpdateVehicle(vehicle);
+
+        logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(addedVehicle);
     }
 
 }
