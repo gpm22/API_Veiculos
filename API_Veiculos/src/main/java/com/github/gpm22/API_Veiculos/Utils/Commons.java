@@ -1,7 +1,10 @@
 package com.github.gpm22.API_Veiculos.Utils;
 
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
+import org.slf4j.Logger;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.regex.Pattern;
@@ -89,5 +92,13 @@ public class Commons {
 
     public static void updateVehiclesRotationActive(Collection<Vehicle> vehicles){
         vehicles.forEach(n -> n.setRotationActive(isRotationActive(n.getRotationDay())));
+    }
+
+    public static ResponseEntity<String> errorResponse(Exception e, HttpStatus httpStatus, String erroMessage, Logger logger){
+        logger.error(erroMessage);
+        e.printStackTrace();
+        return ResponseEntity
+                .status(httpStatus)
+                .body(e.getMessage());
     }
 }
