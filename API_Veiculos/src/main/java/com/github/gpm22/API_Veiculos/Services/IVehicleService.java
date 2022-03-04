@@ -23,8 +23,4 @@ public interface IVehicleService {
     int updateVehiclesPrices();
 
     Vehicle getVehicleById(long vehicleId);
-
-    void removeOwnerFromVehicle(Vehicle removedVehicle, Owner owner);
-
-    void addOwnerToVehicle(Vehicle addedVehicle, Owner owner);
 }

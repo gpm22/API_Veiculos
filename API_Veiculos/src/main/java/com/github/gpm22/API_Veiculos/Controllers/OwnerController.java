@@ -148,7 +148,8 @@ public class OwnerController {
 
             Vehicle addedVehicle = ownerService.addVehicleToOwner(owner, vehicle);
 
-            vehicleService.addOwnerToVehicle(addedVehicle, owner);
+            addedVehicle.addOwner(owner);
+            vehicleService.saveOrUpdateVehicle(addedVehicle);
 
             logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
 
@@ -177,7 +178,8 @@ public class OwnerController {
 
             Vehicle removedVehicle = ownerService.removeVehicleFromOwner(owner, vehicle);
 
-            vehicleService.removeOwnerFromVehicle(removedVehicle, owner);
+            removedVehicle.removeOwner(owner);
+            vehicleService.saveOrUpdateVehicle(removedVehicle);
 
             logger.info("Remoção realizada com sucesso do veículo: " + removedVehicle);
 

@@ -1,7 +1,6 @@
 package com.github.gpm22.API_Veiculos.Services.impl;
 
 import com.github.gpm22.API_Veiculos.Clients.ApiFipeClient;
-import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.VehicleRepository;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
@@ -69,7 +68,6 @@ public class VehicleService implements IVehicleService {
         return apiFipeClient.getFipePrice(type, codeBrand, codeModel, fipeYear).getValor();
 
     }
-
 
     private String getCodeBrand(String type, String vehicleBrand) {
 
@@ -156,22 +154,4 @@ public class VehicleService implements IVehicleService {
         }
     }
 
-    @Override
-    public void removeOwnerFromVehicle(Vehicle removedVehicle, Owner owner) {
-        verifyIfVehicleHasOwner(removedVehicle, owner);
-        removedVehicle.getOwners().remove(owner);
-        saveOrUpdateVehicle(removedVehicle);
-    }
-
-    private void verifyIfVehicleHasOwner(Vehicle vehicle, Owner owner) {
-        if(!vehicle.getOwners().contains(owner)){
-            throw new IllegalArgumentException("O veículo de id " + vehicle.getId() + " não possui o usuário de cpf: " + owner.getCpf());
-        }
-    }
-
-    @Override
-    public void addOwnerToVehicle(Vehicle addedVehicle, Owner owner) {
-        addedVehicle.getOwners().add(owner);
-        saveOrUpdateVehicle(addedVehicle);
-    }
 }

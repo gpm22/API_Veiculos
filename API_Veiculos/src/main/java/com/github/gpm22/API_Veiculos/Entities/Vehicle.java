@@ -48,6 +48,18 @@ public class Vehicle {
         this.type = type;
     }
 
+    public void removeOwner(Owner owner){
+        if(!this.getOwners().contains(owner)){
+            throw new IllegalArgumentException("O veículo de id " + this.getId() + " não possui o usuário de cpf: " + owner.getCpf());
+        }
+
+        this.getOwners().remove(owner);
+    }
+
+    public void addOwner(Owner owner){
+        this.getOwners().add(owner);
+    }
+
     public long getId() {
         return id;
     }
