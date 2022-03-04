@@ -26,7 +26,7 @@ public class VehicleController {
     @Autowired
     private IOwnerService ownerService;
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.OPTIONS)
+    @RequestMapping(method = RequestMethod.OPTIONS)
     public ResponseEntity<String> getOptions() {
         return ResponseEntity
                 .ok()
@@ -53,25 +53,6 @@ public class VehicleController {
                 .body(vehicles);
     }
 
-    @GetMapping("/{vehicle_id}")
-    public ResponseEntity<?> getVehicleById(@PathVariable(value = "vehicle_id") long vehicleId) {
-        try {
-            return getVehicleByIdResponse(vehicleId);
-        } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar o veículo de id: " + vehicleId, logger);
-        }
-    }
-
-    private ResponseEntity<Vehicle> getVehicleByIdResponse(long vehicleId){
-        logger.info("Solicitado o veículo com id: " + vehicleId);
-
-        Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(vehicle);
-    }
-
     @PostMapping
     public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
         try {
@@ -95,6 +76,33 @@ public class VehicleController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(addedVehicle);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.OPTIONS)
+    public ResponseEntity<String> getIdOptions() {
+        return ResponseEntity
+                .ok()
+                .allow(HttpMethod.GET, HttpMethod.OPTIONS)
+                .build();
+    }
+
+    @GetMapping("/{vehicle_id}")
+    public ResponseEntity<?> getVehicleById(@PathVariable(value = "vehicle_id") long vehicleId) {
+        try {
+            return getVehicleByIdResponse(vehicleId);
+        } catch (IllegalArgumentException e) {
+            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar o veículo de id: " + vehicleId, logger);
+        }
+    }
+
+    private ResponseEntity<Vehicle> getVehicleByIdResponse(long vehicleId){
+        logger.info("Solicitado o veículo com id: " + vehicleId);
+
+        Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(vehicle);
     }
 
 }
