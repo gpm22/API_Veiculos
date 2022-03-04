@@ -1,410 +1,157 @@
-# API Veículos :car: :car: :car:
+# Vehicles API :car: :car: :car:
 
-## Descrição
+## API Description
 
-API REST para controlar veículos de usuários. Basicamente trata-se de um sistema onde usuários podem se cadastrar e também cadastrar uma lista de veículos, sendo que o usuário pode realizar a leitura da própria lista de veículos.
+It is a RESTful API for management of users' vehicles, wherein users can register themselves and their vehicles in the system for later reference. The system will also add the price and vehicle rotation day to the vehicle info. Users will be capable of retrieve their own information, remove a vehicle from their list, update their personal information, delete their own profile, retrieve all vehicles registered in the API, and retrieve a specific registered vehicle.
 
-O cadastro do usuário é realizado informando obrigatoriamento as seguintes informações:
-
-1. Nome;
-2. E-mail, que deve ser único para cada usuário;
-3. CPF, que também deve ser único para cada usuário;
-4. Data de nascimento;
-
-Enquanto que o cadastro de um veículo é feito através do CPF ou email do usuário e informando obrigatoriamente as seguintes informações acerca do veículo:
-
-1. Marca;
-2. Modelo;
-3. Ano;
-4. Tipo de veículo:
-   * Carros;
-   * Motos;
-   * *Caminhoes*;
-
-Através do último dígito do ano do veículo a API irá guardar no banco de dados qual o dia da semana que o rodízio desse veículo será ativo utilizando os seguintes critérios:
-
-1. Final 0-1: segunda-feira - 2
-2. Final 2-3: terça-feira - 3
-3. Final 4-5: quarta-feira - 4
-4. Final 6-7: quinta-feira - 5
-5. Final 8-9: sexta-feira - 6
-
-Ao se solicitar a lista de veículos serão retornadas as informações do usuário junto da lista de veículos, sendo que as informações dos veículos a serem mostradas são as informações fornecidas durante o cadastro, o dia da semana em que o rodízio está ativo, se o rodízio está ativo no dia em que o retorno da lista foi requisitado e o preço do veículo que consta na tabela FIPE.
-
-Desse modo, essa API consiste em 3 endpoints:
-
-1. Cadastro de usuários;
-2. Cadastro de veículos através do CPF ou email do usuário;
-3. Retorno da lista de veículos através do CPF ou email do usuário;
-
-O realizamento correto dos cadastros irá retornar *Status 201*, enquanto que a falha no cadastro retornará *Status 400*. Se a solicitação da lista de veículos for correta, o *Status 200* será retornado, enquanto irá retornar o *Status 404* se algo der errado. Em conjunto aos *status* de erro, mensagens explicando o que deu errado também serão mostradas.
-
-## Tecnologias utilizadas
+## Technologies used
 
 * Spring initializr;
-  * Para inicializar o projeto;
+  * To initialize the project;
 * Spring Web;
-  * Para realizar o controle das requisições HTTP que serão feitas a API REST;
+  * To do the control of HTTP requests that will be received by the API;
 * Spring Web Flex;
-  * Para permiter a API realizar o consumo de uma API REST externa;
+  * To consume externals APIs;
 * H2 Database;
-  * Para utilizar um banco de dados em memória;
+  * To use a data base embbed in the system;
 * Spring Data JPA
-  * Usado para criar um modelo que conecta objetos a elementos de um banco de dados relacional usando o **Hibernate**
-  * Usado para ter acesso aos dados do banco de dados utilizando *queries* SQL através do **Java Persistence API (JPA)**
-  * Desse modo, a API consegue acessar e alterar um certo banco de dados;
+  * To create the ORM and the communication with the data base;
 
-## Como usar
+## Starting the System
 
-Para usar essa API é necessário, além de ter um clone local do atual repositório, ter o **Gradle** instalado. Para instalar o **Gradle** é só seguir os passos apresentados em https://gradle.org/install/.
+To use this API it is necessary, in addition to having a local clone of the current repository, to have **Gradle** installed. To install **Gradle** just follow the steps presented at https://gradle.org/install/.
 
-Após instalar o **Gradle**, é só rodar o seguinte comando através de um terminal/console na pasta do projeto:
+After installing **Gradle**, just run the following command through a terminal/console in the project folder:
 
 ```bash
 gradle bootRun
 ```
 
-Após rodar esse comando, um servidor tomcat contendo a API será subido na porta **8080**. 
+After running this command, a tomcat server containing the API will be available on port **8080**.
 
-O sistema tem 4 end-points:
+## Users Registration
 
-1. http://localhost:8080/apiveiculos/v1/usuario
+User registration is made by sending a **POST** request to the **/apiveiculos/v1/usuario/** endpoint. The request body must contain a **JSON** with the following mandatory information:
 
-   * Usado para cadastro de usuários através de um método post com corpo sendo um JSON seguindo o padrão:
+1. **Name;**
+2. **E-mail**, which must be unique for each user;
+3. **CPF**, which must also be unique for each user;
+4. **Date of birth**;
 
-     ```json
-     {
-         "name":"Luke Skywalker",    
-      	"email":"greensaber@newrepublic.com",
-         "cpf": "981.434.454-90",    
-         "birthDate": "21/07/2000"
-     }
-     ```
-
-     
-
-2. http://localhost:8080/apiveiculos/v1/usuario/{cpf ou email}
-
-   * Usado para recuperar todos os dados de um certo usuário;
-
-3. http://localhost:8080/apiveiculos/v1/cadastrar-veiculo/{cpf ou Email}
-
-   * Usado para cadastrar um certo veículo para um certo usuário;
-
-   * O corpo deve conter um JSON no seguinte formato:
-
-     ```json
-     {    
-         "brand":"HYUNDAI",    
-         "model":"HD80 3.0 16V (diesel)(E5)",    
-         "year": "2018",    
-         "type": "caminhoes"}
-     ```
-
-   * Os valores do JSON devem ser os **mesmos** disponibilizados pela [FIPE API HTTP REST](https://deividfortuna.github.io/fipe/).
-
-4. http://localhost:8080/apiveiculos/v1/lista-de-veiculos/{cpf ou email}
-
-   * Usado para recuperar todos os veículos de um certo usuário;
-
-# Exemplos
-
-A seguir são mostrados alguns exemplo feitos utilizando o aplicativo [Postman](https://www.postman.com/).
-
-## Cadastro de usuários
-
-Fazendo 3 requisições *POST* separadas para http://localhost:8080/apiveiculos/v1/usuario, os seguintes usuários ilustres foram cadastrados:
+Exemple:
 
 ```json
-{
-    "name":"Luke Skywalker",
-    "email":"greensaber@newrepublic.com",
-    "cpf": "981.434.454-90",
+{ 
+    "name":"Luke Skywalker",    
+ 	"email":"greensaber@newrepublic.com",    
+    "cpf": "126.764.550-44",    
     "birthDate": "21/07/2000"
 }
-
-{
-    "name":"Ash Ketchum",
-    "email":"foreveryoung@bill.com",
-    "cpf": "321.139.018-18",
-    "birthDate": "20/02/1992"
-}
-
-{
-    "name":"John Wick",
-    "email":"lovemydog@neopets.com",
-    "cpf": "439.518.752-45",
-    "birthDate": "30/11/1978"
-}
 ```
 
-A resposta obtida para cada um desses cadastro foi:
+If the registration is successful, a response with status **201** will be returned, otherwise, a response with status **400** will be returned.
+
+## Retrieving a User
+
+To retrieve a specific registered user, just send a **GET** request to the endpoint **/apiveiculos/v1/user/{email_ou_cpf}**, where the email or CPF of the user to be returned must be in place of **{email_ou_cpf}**. If the request is successful, a response with status **200** will be returned, otherwise, a response with status **404** will be returned.
+
+## Adding a Vehicle to a User
+
+To add a vehicle to a user, the vehicle must first be registered in the system. To retrieve the list of registered vehicles, just send a **GET** request to the endpoint **/apiveiculos/v1/veiculo/**. Now, having the information of the vehicle to be added, it is only necessary to send a **PUT** request to the endpoint **/apiveiculos/v1/user/{email_ou_cpf}/registro-veiculo/{vehicle_id}**, where the user email or CPF must be in place of **{email_ou_cpf}** and the id of the vehicle to be added must be in place of **{vehicle_id}**. If the addition is successful, a response with status **200** will be returned, otherwise, a response with status **400** will be returned.
+
+## Removing a Vehicle from a User
+
+To remove a vehicle from a user, it is only necessary to send a **DELETE** request to the endpoint **/apiveiculos/v1/user/{email_ou_cpf}/registro-veiculo/{vehicle_id}**, where the user email or CPF must be in place of **{email_ou_cpf}** and the id of the vehicle to be removed must be in place of **{vehicle_id}**. If the removal is successful, a response with status **200** will be returned, otherwise, a response with status **400** will be returned.
+
+## Updating a User's Data
+
+Updating a user's data is performed by sending a **PUT** request to the endpoint **/apiveiculos/v1/usuario/{email_ou_cpf}**, where the email or CPF of the user to be updated must be in place of **{email_ou_cpf}** and the request body must contain a **JSON** with all the user information, even the unchanged ones, which are:
+
+1. **Name;**
+2. **Email;**
+3. **CPF;**
+4. **Date of birth;**
+
+If the update is successful, a response with status **200** will be returned, otherwise, a response with status **400** will be returned.
+
+## Deleting a user
+
+To delete a user, just send a **DELETE** request to the endpoint **/apiveiculos/v1/usuario/ {email_ou_cpf}**, where the email or cpf of the user to be deleted must be in place of **{email_ou_cpf}**. If the removal is successful, a response with status **200** will be returned, otherwise, a response with status **400** will be returned.
+
+## Vehicle Registration
+
+The vhicle registration is performed by sending a **POST** request to the endpoint **/apiveiculos/v1/veiculo/**, where the body of the request must contain a **JSON** with the following mandatory information:
+
+1. **Brand**;
+2. **Model**;
+3. **Year**;
+4. **Type of vehicle**, which must be one of the following:
+   * carros (cars);
+   * motos (motorcycles);
+   * caminhoes (trucks);
+   * fipe;
+
+Exemple:
 
 ```json
-{
-    "id": 1,
-    "name": "Luke Skywalker",
-    "email": "greensaber@newrepublic.com",
-    "cpf": "981.434.454-90",
-    "birthDate": "21/07/2000",
-    "vehicles": null
-}
-
-{
-    "id": 2,
-    "name": "Ash Ketchum",
-    "email": "foreveryoung@bill.com",
-    "cpf": "321.139.018-18",
-    "birthDate": "20/02/1992",
-    "vehicles": null
-}
-
-{
-    "id": 3,
-    "name": "John Wick",
-    "email": "lovemydog@neopets.com",
-    "cpf": "439.518.752-45",
-    "birthDate": "30/11/1978",
-    "vehicles": null
-}
-```
-
-Ao se tentar cadastrar algum usuário com algum desses emails o seguinte resultado aparece:
-
-```java
-Email: lovemydog@neopets.com já utilizado!
-```
-
-Tentativa de cadastro de algum CPF já cadastrado resulta em:
-
-```
-CPF: 439.518.752-45 já utilizado!
-```
-
- ## Cadastro de veículos
-
-Os seguintes veículso foram separamente cadastrados para o usuário **Ash Ketchum** ao se fazer separadas requisições *POST* para http://localhost:8080/apiveiculos/v1/cadastrar-veiculo/foreveryoung@biil.com:
-
-```json
-{
-    "brand":"VW - VolksWagen",
-    "model":"AMAROK High.CD 2.0 16V TDI 4x4 Dies. Aut",
-    "year": "2014 Diesel",
-    "type": "carros"
-}
-
-{
-    "brand":"HYUNDAI",
-    "model":"HD80 3.0 16V (diesel)(E5)",
-    "year": "2018",
+{    
+    "brand":"HYUNDAI",    
+    "model":"HD80 3.0 16V (diesel)(E5)",    
+    "year": "2018",    
     "type": "caminhoes"
 }
 ```
 
-Que retornou a seguinte resposta:
+This information must be the same as that is contained in [API FIPE](https://github.com/deividfortuna/fipe), as this API will be used to return the price of the vehicle. This api was chosen because the [FIPE table](https://veiculos.fipe.org.br/) contains the average prices of vehicles announced by sellers in the Brazilian market.
 
-```json
-{
-    "id": 4,
-    "brand": "VW - VolksWagen",
-    "model": "AMAROK High.CD 2.0 16V TDI 4x4 Dies. Aut",
-    "year": "2014 Diesel",
-    "type": "carros",
-    "rotationDay": 4,
-    "price": "R$ 102.451,00",
-    "rotationActive": false
-}
+After the system receives the request, the following processes will be performed to register information about the price of the vehicle and vehicle rotation:
 
-{
-    "id": 7,
-    "brand": "HYUNDAI",
-    "model": "HD80 3.0 16V (diesel)(E5)",
-    "year": "2018",
-    "type": "caminhoes",
-    "rotationDay": 6,
-    "price": "R$ 90.515,00",
-    "rotationActive": false
-}
-```
+1. The rotation day is obtained through the last digit of the vehicle year using the following criteria:
 
-Mais dois veículos foram cadastrados para o nosso querido e imortal **Ash**, agora fazendo duas requisições *POST *seaparadas para http://localhost:8080/apiveiculos/v1/cadastrar-veiculo/321.139.018-18. Assim os seguintes veículos foram adicionados:
+   - Final 0-1: Monday - 2
 
-```json
-{
-    "brand":"Baby",
-    "model":"Buggy RS Evolution 1.8 8V",
-    "year": "2018 Gasolina",
-    "type": "carros"
-}
+   - Final 2-3: Tuesday - 3
 
-{
-    "brand":"byCristo",
-    "model":"Triciclo Star II Top / Super Top",
-    "year": "2003",
-    "type": "motos"
-}
+   - Final 4-5: Wednesday - 4
 
-```
+   - Final 6-7: Thursday - 5
 
-resultando em:
+   - Final 8-9: Friday - 6
 
-```json
-{
-    "id": 5,
-    "brand": "Baby",
-    "model": "Buggy RS Evolution 1.8 8V",
-    "year": "2018 Gasolina",
-    "type": "carros",
-    "rotationDay": 6,
-    "price": "R$ 36.828,00",
-    "rotationActive": false
-}
+2. Then the rotation day is compared with the current day to fill the **isRotationActive** attribute;
 
-{
-    "id": 6,
-    "brand": "byCristo",
-    "model": "Triciclo Star II Top / Super Top",
-    "year": "2003",
-    "type": "motos",
-    "rotationDay": 3,
-    "price": "R$ 16.945,00",
-    "rotationActive": false
-}
-```
+3. Finally, the price of the vehicle is obtained through [FIPE API](https://github.com/deividfortuna/fipe).
 
-Tentar cadastrar um veículo com um email ou CPF não cadastrados resulta em:
+If the registration is successful, a response with status **201** will be returned, otherwise, a response with status **400** will be returned.
 
-```java
-Não existe usuário com o email ou cpf: foreveryoungbill.com
-```
+## Retrieving All Vehicles
 
-## Solicitação da lista de veículos
+To retrieve the list of registered vehicles, just send a **GET** request to the endpoint **/apiveiculos/v1/veiculo/**. If the request is successful, a response with status **200** will be returned, otherwise, a response with status **404** will be returned.
 
-Todos os veículos do persistente **Ash** foram requisitados através de uma requisição *GET* para http://localhost:8080/apiveiculos/v1/usuario/foreveryoung@bill.com, que resultou em:
+## Retrieving a Vehicle
 
-```json
-{
-    "id": 2,
-    "name": "Ash Ketchum",
-    "email": "foreveryoung@bill.com",
-    "cpf": "321.139.018-18",
-    "birthDate": "20/02/1992",
-    "vehicles": [
-        {
-            "id": 4,
-            "brand": "VW - VolksWagen",
-            "model": "AMAROK High.CD 2.0 16V TDI 4x4 Dies. Aut",
-            "year": "2014 Diesel",
-            "type": "carros",
-            "rotationDay": 4,
-            "price": "R$ 102.451,00",
-            "rotationActive": false
-        },
-        {
-            "id": 5,
-            "brand": "Baby",
-            "model": "Buggy RS Evolution 1.8 8V",
-            "year": "2018 Gasolina",
-            "type": "carros",
-            "rotationDay": 6,
-            "price": "R$ 36.828,00",
-            "rotationActive": false
-        },
-        {
-            "id": 6,
-            "brand": "byCristo",
-            "model": "Triciclo Star II Top / Super Top",
-            "year": "2003",
-            "type": "motos",
-            "rotationDay": 3,
-            "price": "R$ 16.945,00",
-            "rotationActive": false
-        },
-        {
-            "id": 7,
-            "brand": "HYUNDAI",
-            "model": "HD80 3.0 16V (diesel)(E5)",
-            "year": "2018",
-            "type": "caminhoes",
-            "rotationDay": 6,
-            "price": "R$ 90.515,00",
-            "rotationActive": false
-        }
-    ]
-}
-```
+To retrieve a specific registered vehicle, just send a **GET** request to the endpoint **/apiveiculos/v1/veiculo/{id}**, where the id of the vehicle to be returned must be in place of **{id}**. If the request is successful, a response with status **200** will be returned, otherwise, a response with status **404** will be returned.
 
-Fazer a requisição para o CPF irá resultar na mesma respostas, como pode ser visto ao fazer uma requisição *GET* para
+## Endpoints
 
-```json
-{
-    "id": 2,
-    "name": "Ash Ketchum",
-    "email": "foreveryoung@bill.com",
-    "cpf": "321.139.018-18",
-    "birthDate": "20/02/1992",
-    "vehicles": [
-        {
-            "id": 4,
-            "brand": "VW - VolksWagen",
-            "model": "AMAROK High.CD 2.0 16V TDI 4x4 Dies. Aut",
-            "year": "2014 Diesel",
-            "type": "carros",
-            "rotationDay": 4,
-            "price": "R$ 102.451,00",
-            "rotationActive": false
-        },
-        {
-            "id": 5,
-            "brand": "Baby",
-            "model": "Buggy RS Evolution 1.8 8V",
-            "year": "2018 Gasolina",
-            "type": "carros",
-            "rotationDay": 6,
-            "price": "R$ 36.828,00",
-            "rotationActive": false
-        },
-        {
-            "id": 6,
-            "brand": "byCristo",
-            "model": "Triciclo Star II Top / Super Top",
-            "year": "2003",
-            "type": "motos",
-            "rotationDay": 3,
-            "price": "R$ 16.945,00",
-            "rotationActive": false
-        },
-        {
-            "id": 7,
-            "brand": "HYUNDAI",
-            "model": "HD80 3.0 16V (diesel)(E5)",
-            "year": "2018",
-            "type": "caminhoes",
-            "rotationDay": 6,
-            "price": "R$ 90.515,00",
-            "rotationActive": false
-        }
-    ]
-}
-```
+The following are the endpoints and http methods available for each endpoint:
 
-Requisições para CPFs ou emails inexistentes resulta em:
-
-```java
-Não existe usuário com o email ou cpf: 321.139.01818
-```
-
-Uma requisão *GET* para http://localhost:8080/apiveiculos/v1/usuario/lovemydog@neopets.com irá retornar os veículos do nosso querido amante dos animais John Wick:
-
-```json
-{
-    "id": 3,
-    "name": "John Wick",
-    "email": "lovemydog@neopets.com",
-    "cpf": "439.518.752-45",
-    "birthDate": "30/11/1978",
-    "vehicles": []
-}
-```
-
-Um total incrível de 0 veículos, como o esperado! Isso demonstra que os veículos estão sendo cadastrados separadamente para cada usuário, como o programado.
+* **/apiveiculos/v1/usuario/**
+  * OPTIONS
+  * POST
+* **/apiveiculos/v1/usuario/{email_ou_cpf}**
+  * OPTIONS
+  * GET
+  * PUT
+  * DELETE
+* **/apiveiculos/v1/usuario/{email_ou_cpf}/registro-veiculo/{vehicle_id}**
+  * OPTIONS
+  * PUT
+  * DELETE
+* **/apiveiculos/v1/veiculo/**
+  * OPTIONS
+  * POST
+  * GET
+* **/apiveiculos/v1/veiculo/{id}**
+  * OPTIONS
+  * GET
