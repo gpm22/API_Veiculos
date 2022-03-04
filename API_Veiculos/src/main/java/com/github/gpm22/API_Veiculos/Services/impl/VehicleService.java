@@ -52,7 +52,7 @@ public class VehicleService implements IVehicleService {
     }
 
     @Override
-    public void setVehicleInformations(Vehicle vehicle){
+    public void setVehicleInformationsAboutRotationAndPrice(Vehicle vehicle){
         vehicle.setRotationDay(Commons.rotationDay(vehicle.getYear()));
         vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
         vehicle.setPrice(getFipePrice(vehicle));
