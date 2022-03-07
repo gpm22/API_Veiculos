@@ -38,30 +38,149 @@ O cadastro do usuário é realizado enviando uma requisição **POST** ao endpoi
 3. **CPF**, que também deve ser único para cada usuário;
 4. **Data de nascimento;**
 
-Exemplo:
+Se o cadastro der certo, será retornada uma resposta com status **201** contendo em seu corpo um **JSON** com as infomações do usuário cadastrado, mas se der errado, será retornada uma resposta com status **400** e contendo uma mensagem de erro no seu corpo.
 
-```json
-{ 
-    "name":"Luke Skywalker",    
- 	"email":"greensaber@newrepublic.com",    
-    "cpf": "126.764.550-44",    
-    "birthDate": "21/07/2000"
-}
-```
+**Exemplo:**
 
-Se o cadastro der certo, uma resposta com status **201** será retornada, já se de errado, será retornada uma resposta com status **400**.
+1. Foi enviada uma requisição **POST** com o seguinte **JSON** em seu corpo ao endpoint **/apiveiculos/v1/usuario/**:
+
+   ```json
+   { 
+       "name":"Luke Skywalker",    
+    	"email":"greensaber@newrepublic.com",    
+       "cpf": "126.764.550-44",    
+       "birthDate": "21/07/2000"
+   }
+   ```
+
+   
+
+2. Como as informações estão corretas, o cadastro ocorreu corretamente e o corpo da resposta retornada é o seguinte:
+
+   ```json
+   {
+       "id": 1,
+       "name": "Luke Skywalker",
+       "email": "greensaber@newrepublic.com",
+       "cpf": "126.764.550-44",
+       "birthDate": "21/07/2000",
+       "vehicles": null
+   }
+   ```
+
+   
+
+3. Ao se repetir o primeiro passo o seguinte erro foi retornado:
+
+   ```json
+   CPF: 126.764.550-44 já utilizado!
+   ```
+
+   
 
 ## Recuperando um Usuário
 
-Para recuperar um usuário cadastrado específico é só enviar uma requisição **GET** ao endpoint **/apiveiculos/v1/ usuario/{email_ou_cpf}**, onde no lugar de **{email_ou_cpf}** deve estar o email ou cpf do usuário a ser retornado. Se a solicitação der certo, uma resposta com status **200** será retornada, já se de errado, será retornada uma resposta com status **404**.
+Para recuperar um usuário cadastrado específico é só enviar uma requisição **GET** ao endpoint **/apiveiculos/v1/ usuario/{email_ou_cpf}**, onde no lugar de **{email_ou_cpf}** deve estar o email ou cpf do usuário a ser retornado. Se a solicitação der certo, será retornada uma resposta com status **200** contendo em seu corpo um **JSON** com as informações do usuário requisitado, mas se der errado, será retornada uma resposta com status **404** e contendo uma mensagem de erro no seu corpo.
+
+**Exemplo**:
+
+1. Foi enviada uma requisão **GET** ao endpoint **apiveiculos/v1/usuario/126.764.550-44**, onde 126.764.550-44 é o cpf do usuário cadastrado na seção anterior. A corpo da resposta foi o seguinte:
+
+   ```json
+   {
+       "id": 1,
+       "name": "Luke Skywalker",
+       "email": "greensaber@newrepublic.com",
+       "cpf": "126.764.550-44",
+       "birthDate": "21/07/2000",
+       "vehicles": []
+   }
+   ```
+
+   
 
 ## Adicionando um Veículo ao Usuário
 
-Para adicionar um veículo a um usuário, primeiramente o veículo deve já estar cadastrado no sistema. Para recuperar a lista de veículos cadastrados é só enviar uma requisição **GET** ao endpoint **/apiveiculos/v1/veiculo/**. Agora, sabendo as informações do veículo a ser adicionado, apenas é preciso enviar uma requisição **PUT** ao endpoint **/apiveiculos/v1/ usuario/{email_ou_cpf}/registro-veiculo/{vehicle_id}**, sendo que no lugar de **{email_ou_cpf}** deve estar o email ou cpf do usuário e no lugar de **{vehicle_id}** deve estar a id do veículo a ser adicionado. Se a adição der certo, uma resposta com status **200** será retornada, já se de errado, será retornada uma resposta com status **400**.
+Para adicionar um veículo a um usuário, primeiramente o veículo deve já estar cadastrado no sistema. Para recuperar a lista de veículos cadastrados é só enviar uma requisição **GET** ao endpoint **/apiveiculos/v1/veiculo/**. Agora, sabendo as informações do veículo a ser adicionado, apenas é preciso enviar uma requisição **PUT** ao endpoint **/apiveiculos/v1/ usuario/{email_ou_cpf}/registro-veiculo/{vehicle_id}**, sendo que no lugar de **{email_ou_cpf}** deve estar o email ou cpf do usuário e no lugar de **{vehicle_id}** deve estar a id do veículo a ser adicionado. Se a adição der certo, será retornada uma resposta com status **200** contendo em seu corpo um **JSON** com as informações do veículo adicionado, mas se der errado, será retornada uma resposta com status **400** e contendo uma mensagem de erro no seu corpo.
+
+**Exemplo**:
+
+1. Foi enviada uma requisão **PUT** ao endpoint **/apiveiculos/v1/usuario/greensaber@newrepublic.com/registro-veiculo/2**, onde **greensaber@newrepublic.com** é o email do usuário cadastrado anteriormente e **2** é o id do veículo já cadastrado. A corpo da resposta foi o seguinte:
+
+   ```json
+   {
+       "id": 2,
+       "brand": "HYUNDAI",
+       "model": "HD80 3.0 16V (diesel)(E5)",
+       "year": "2018",
+       "type": "caminhoes",
+       "rotationDay": 6,
+       "price": "R$ 100.446,00",
+       "rotationActive": false
+   }
+   ```
+
+2. Para verificar se a adição ocorreu, foi realizada uma requisão **GET** ao endpoint **apiveiculos/v1/usuario/126.764.550-44**. O corpo da resposta foi o seguinte:
+
+   ```json
+   {
+       "id": 1,
+       "name": "Luke Skywalker",
+       "email": "greensaber@newrepublic.com",
+       "cpf": "126.764.550-44",
+       "birthDate": "21/07/2000",
+       "vehicles": [
+           {
+               "id": 2,
+               "brand": "HYUNDAI",
+               "model": "HD80 3.0 16V (diesel)(E5)",
+               "year": "2018",
+               "type": "caminhoes",
+               "rotationDay": 6,
+               "price": "R$ 100.446,00",
+               "rotationActive": false
+           }
+       ]
+   }
+   ```
+
+   O veículo foi registrado corretamente!
 
 ## Removendo um Veículo de um Usuário
 
-Para remover um veículo de um usuário, apenas é preciso enviar uma requisição **DELETE** ao endpoint **/apiveiculos/v1/ usuario/{email_ou_cpf}/registro-veiculo/{vehicle_id}**, sendo que no lugar de **{email_ou_cpf}** deve estar o email ou cpf do usuário e no lugar de **{vehicle_id}** deve estar a id do veículo a ser removido. Se a remoção der certo, uma resposta com status **200** será retornada, já se de errado, será retornada uma resposta com status **400**.
+Para remover um veículo de um usuário, apenas é preciso enviar uma requisição **DELETE** ao endpoint **/apiveiculos/v1/ usuario/{email_ou_cpf}/registro-veiculo/{vehicle_id}**, sendo que no lugar de **{email_ou_cpf}** deve estar o email ou cpf do usuário e no lugar de **{vehicle_id}** deve estar a id do veículo a ser removido. Se a remoção der certo,  será retornada uma resposta com status **200** contendo em seu corpo um **JSON** com as informações do veículo removido, mas se der errado, será retornada uma resposta com status **400** e contendo uma mensagem de erro no seu corpo.
+
+**Exemplo**:
+
+1. Foi enviada uma requisão **DELETE** ao endpoint **/apiveiculos/v1/usuario/greensaber@newrepublic.com/registro-veiculo/2**, onde **greensaber@newrepublic.com** é o email do usuário cadastrado anteriormente e **2** é o id do veículo já cadastrado e registrado. A corpo da resposta foi o seguinte:
+
+   ```json
+   {
+       "id": 2,
+       "brand": "HYUNDAI",
+       "model": "HD80 3.0 16V (diesel)(E5)",
+       "year": "2018",
+       "type": "caminhoes",
+       "rotationDay": 6,
+       "price": "R$ 100.446,00",
+       "rotationActive": false
+   }
+   ```
+
+2. Para verificar se a remoção ocorreu, foi realizada uma requisão **GET** ao endpoint **apiveiculos/v1/usuario/126.764.550-44**. O corpo da resposta foi o seguinte:
+
+   ```json
+   {
+       "id": 1,
+       "name": "Luke Skywalker",
+       "email": "greensaber@newrepublic.com",
+       "cpf": "126.764.550-44",
+       "birthDate": "21/07/2000",
+       "vehicles": []
+   }
+   ```
+
+   O veículo foi removido corretamente!
 
 ## Atualização dos Dados de um Usuário
 
@@ -72,11 +191,62 @@ A atualização dos dados  de um usuário é realizada enviando uma requisição
 3. **CPF;**
 4. **Data de nascimento;**
 
-Se a atualização der certo, uma resposta com status **200** será retornada, já se de errado, será retornada uma resposta com status **400**.
+Se a atualização der certo, será retornada uma resposta com status **200** contendo em seu corpo um **JSON** com as informações do usuário atualizado, mas se der errado, será retornada uma resposta com status **400 **e contendo uma mensagem de erro no seu corpo.
+
+**Exemplo**:
+
+1. Foi enviada uma requisão **PUT** contendo o seguinte corpo ao endpoint **apiveiculos/v1/usuario/126.764.550-44**, onde 126.764.550-44 é o cpf do usuário cadastrado anteriormente. Será feita uma alteração no email de greensaber@newrepublic.com para greensaber@newnewrepublic.com.
+
+   ```json
+   { 
+       "name":"Luke Skywalker",    
+    	"email":"greensaber@newnewrepublic.com",    
+       "cpf": "126.764.550-44",    
+       "birthDate": "21/07/2000"
+   }
+   ```
+
+2. Como os dados estão corretos, a requisição deu certo e o corpo da resposta foi o seguinte:
+
+   ```json
+   {
+       "id": 1,
+       "name": "Luke Skywalker",
+       "email": "greensaber@newnewrepublic.com",
+       "cpf": "126.764.550-44",
+       "birthDate": "21/07/2000",
+       "vehicles": []
+   }
+   ```
+
+   
 
 ## Deletando um usuário
 
-Para deletar um usuário, apenas é preciso enviar uma requisição **DELETE** ao endpoint **/apiveiculos/v1/usuario/ {email_ou_cpf}**, sendo que no lugar de **{email_ou_cpf}** deve estar o email ou cpf do usuário a ser deltado. Se a remoção der certo, uma resposta com status **200** será retornada, já se de errado, será retornada uma resposta com status **400**.
+Para deletar um usuário, apenas é preciso enviar uma requisição **DELETE** ao endpoint **/apiveiculos/v1/usuario/ {email_ou_cpf}**, sendo que no lugar de **{email_ou_cpf}** deve estar o email ou cpf do usuário a ser deltado. Se a remoção der certo, será retornada uma resposta com status **200** contendo em seu corpo um **JSON** com as informações do usuário deletado, mas se der errado, será retornada uma resposta com status **400 **e contendo uma mensagem de erro no seu corpo.
+
+**Exemplo**:
+
+1. Foi enviada uma requisão **DELETE** ao endpoint **apiveiculos/v1/usuario/126.764.550-44**, onde 126.764.550-44 é o cpf do usuário cadastrado anteriormente. A corpo da resposta foi o seguinte:
+
+   ```json
+   {
+       "id": 1,
+       "name": "Luke Skywalker",
+       "email": "greensaber@newrepublic.com",
+       "cpf": "126.764.550-44",
+       "birthDate": "21/07/2000",
+       "vehicles": []
+   }
+   ```
+
+2. Para verificar se o usuário foi deletado, tentou-se recuperar o usuário deletado ao se fazer uma requisição **GET** ao endpoint **apiveiculos/v1/usuario/126.764.550-44**. O corpo da resposta foi:
+
+   ```json
+   Não existe usuário com o cpf: 126.764.550-44
+   ```
+
+   O usuário foi deletado corretamente.
 
 ## Cadastro de Veículos
 
@@ -90,17 +260,6 @@ O cadastro de um veículo é realizado enviando uma requisição **POST** ao end
    * motos;
    * caminhoes;
    * fipe;
-
-Exemplo:
-
-```json
-{    
-    "brand":"HYUNDAI",    
-    "model":"HD80 3.0 16V (diesel)(E5)",    
-    "year": "2018",    
-    "type": "caminhoes"
-}
-```
 
 Sendo que essas informações devem estar iguais as contidas na [API FIPE](https://github.com/deividfortuna/fipe), pois essa API será usada na retornar o preço do veículo. Essa api foi escolhida, pois a [tabela FIPE](https://veiculos.fipe.org.br/) contém os preços médios dos veículos anunciados pelos vendedores no mercado brasileiro. 
 
@@ -122,15 +281,103 @@ Após o sistema receber a requisição, os seguintes processos serão executados
 
 3. Por fim, o preço do veículo é obtido através da  [API FIPE](https://github.com/deividfortuna/fipe).
 
-Se o cadastro der certo, uma resposta com status **201** será retornada, já se de errado, será retornada uma resposta com status **400**.
+Se o cadastro der certo, será retornada uma resposta com status **201** contendo em seu corpo um **JSON** com as informações do veículo cadastrado, mas se der errado, será retornada uma resposta com status **400** e contendo uma mensagem de erro no seu corpo. No caso do veículo já ter sido anteriormente cadastrado, mensagem de erro será a seguinte: **Esse veículo já foi anteriormente cadastrado: {vehicle_id}**, onde no lugar de **{vehicle_id}** irá ser a id do veículo já cadastrado.
+
+**Exemplo:**
+
+1. Foi enviado uma requisição **POST** ao endpoint **/apiveiculos/v1/veiculo/** contendo o seguinte **JSON** em seu corpo:
+
+   ```json
+   {    
+       "brand":"HYUNDAI",    
+       "model":"HD80 3.0 16V (diesel)(E5)",    
+       "year": "2018",    
+       "type": "caminhoes"
+   }
+   ```
+
+   
+
+2. Como as informações estão corretas, o cadastro ocorreu corretamente e o corpo da resposta retornada é o seguinte:
+
+   ```json
+   {
+       "id": 2,
+       "brand": "HYUNDAI",
+       "model": "HD80 3.0 16V (diesel)(E5)",
+       "year": "2018",
+       "type": "caminhoes",
+       "rotationDay": 6,
+       "price": "R$ 100.446,00",
+       "rotationActive": false
+   }
+   ```
+
+3. Ao se repetir o primeiro passo o seguinte erro foi retornado:
+
+   ```json
+   Esse veículo já foi anteriormente cadastrado: 2
+   ```
+
+   
 
 ## Recuperando Todos os Veículos
 
-Para recuperar a lista de veículos cadastrados é só enviar uma requisição **GET** ao endpoint **/apiveiculos/v1/veiculo/**. Se a solicitação der certo, uma resposta com status **200** será retornada, já se de errado, será retornada uma resposta com status **404**.
+Para recuperar a lista de veículos cadastrados é só enviar uma requisição **GET** ao endpoint **/apiveiculos/v1/veiculo/**. Se a solicitação der certo, será retornada uma resposta com status **200** contendo em seu corpo um **JSON** com uma lista de informações de todos dos veículos cadastrados, mas se der errado, será retornada uma resposta com status **404** e contendo uma mensagem de erro no seu corpo.
+
+**Exemplo:**
+
+1. Foi enviada um requisição **GET** ao endpoint **/apiveiculos/v1/veiculo/** e o corpo da resposta foi o seguinte:
+
+   ```json
+   [
+       {
+           "id": 2,
+           "brand": "HYUNDAI",
+           "model": "HD80 3.0 16V (diesel)(E5)",
+           "year": "2018",
+           "type": "caminhoes",
+           "rotationDay": 6,
+           "price": "R$ 100.446,00",
+           "rotationActive": false
+       },
+       {
+           "id": 3,
+           "brand": "FIAT",
+           "model": "500 Sport Air 1.4 16V/1.4 Flex Mec.",
+           "year": "2014 Gasolina",
+           "type": "carros",
+           "rotationDay": 4,
+           "price": "R$ 44.208,00",
+           "rotationActive": false
+       }
+   ]
+   ```
+
+   
 
 ## Recuperando um Veículo
 
-Para recuperar um veículo cadastrado específico é só enviar uma requisição **GET** ao endpoint **/apiveiculos/v1/ veiculo/{id}**, onde no lugar de **{id}** deve estar a id do veículo a ser retornado. Se a solicitação der certo, uma resposta com status **200** será retornada, já se de errado, será retornada uma resposta com status **404**.
+Para recuperar um veículo cadastrado específico é só enviar uma requisição **GET** ao endpoint **/apiveiculos/v1/ veiculo/{id}**, onde no lugar de **{id}** deve estar a id do veículo a ser retornado. Se a solicitação der certo, será retornada uma resposta com status **200** contendo em seu corpo um **JSON** com as informações do veículo requisitado, mas se der errado, será retornada uma resposta com status **404** e contendo uma mensagem de erro no seu corpo.
+
+**Exemplo:**
+
+1. Foi enviada um requisição **GET** ao endpoint **/apiveiculos/v1/veiculo/3** e o corpo da resposta foi o seguinte:
+
+   ```json
+   {
+       "id": 3,
+       "brand": "FIAT",
+       "model": "500 Sport Air 1.4 16V/1.4 Flex Mec.",
+       "year": "2014 Gasolina",
+       "type": "carros",
+       "rotationDay": 4,
+       "price": "R$ 44.208,00",
+       "rotationActive": false
+   }
+   ```
+
+   
 
 ## Endpoints
 
