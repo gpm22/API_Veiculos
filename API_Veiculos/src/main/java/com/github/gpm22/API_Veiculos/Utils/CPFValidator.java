@@ -5,23 +5,23 @@ import java.util.stream.Stream;
 
 public class CPFValidator {
 
-    public static Boolean cpfValidation(String cpf){
-        return cpfValidateFormat(cpf) && cpfValidateCalculation(cpf);
+    public static Boolean validateCPF(String cpf){
+        return validateCPFFormat(cpf) && validateCPFCalculation(cpf);
     }
 
-    private static Boolean cpfValidateFormat(String cpf) {
+    private static Boolean validateCPFFormat(String cpf) {
         String cpfPattern = "[0-9]{3}\\.?[0-9]{3}\\.?[0-9]{3}\\-?[0-9]{2}";
 
         return Pattern.compile(cpfPattern).matcher(cpf).matches();
     }
 
-    private static Boolean cpfValidateCalculation(String cpf) {
+    private static Boolean validateCPFCalculation(String cpf) {
         int[] cpfDigits = Stream.of(cpf.replaceAll("[^0-9]", "").split("")).mapToInt(Integer::parseInt).toArray();
-        return cpfDigitValidation(cpfDigits, 1) && cpfDigitValidation(cpfDigits, 2)
-                && !isAInvalidKnownCpf(cpfDigits);
+        return validateCPFDigit(cpfDigits, 1) && validateCPFDigit(cpfDigits, 2)
+                && !isAnInvalidKnownCpf(cpfDigits);
     }
 
-    private static boolean cpfDigitValidation(int[] cpf, int digit) {
+    private static boolean validateCPFDigit(int[] cpf, int digit) {
 
         int digitPosition;
 
@@ -48,7 +48,7 @@ public class CPFValidator {
         return cpf[digitPosition] == sumValidationValue;
     }
 
-    private static boolean isAInvalidKnownCpf(int[] cpf) {
+    private static boolean isAnInvalidKnownCpf(int[] cpf) {
 
         //verifying if the cpf is not compose of the same number,
         //per example 000.000.000-00 and 111.111.111-11.
