@@ -3,6 +3,7 @@ package com.github.gpm22.API_Veiculos.Services.impl;
 import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Repositories.OwnerRepository;
 import com.github.gpm22.API_Veiculos.Services.IOwnerService;
+import com.github.gpm22.API_Veiculos.Utils.CPFValidator;
 import com.github.gpm22.API_Veiculos.Utils.Commons;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ public class OwnerService implements IOwnerService {
     }
 
     private void validateOwnerCpf(String ownerCpf){
-        if(!Commons.cpfValidation(ownerCpf)){
+        if(!CPFValidator.cpfValidation(ownerCpf)){
             throw new IllegalArgumentException("CPF: " + ownerCpf + " é inválido!");
         }
     }
