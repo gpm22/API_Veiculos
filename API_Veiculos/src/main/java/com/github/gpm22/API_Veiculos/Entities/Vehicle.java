@@ -12,7 +12,7 @@ import javax.persistence.Column;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
-import com.github.gpm22.API_Veiculos.Utils.Commons;
+import com.github.gpm22.API_Veiculos.Utils.RotationDay;
 
 @Entity
 @Table(name = "vehicles")
@@ -64,7 +64,7 @@ public class Vehicle {
 
     public static void updateVehiclesRotationActive(Collection<Vehicle> vehicles){
         for(Vehicle vehicle: vehicles)
-            vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
+            vehicle.setRotationActive(RotationDay.isRotationDayActive(vehicle.getRotationDay()));
     }
     public long getId() {
         return id;

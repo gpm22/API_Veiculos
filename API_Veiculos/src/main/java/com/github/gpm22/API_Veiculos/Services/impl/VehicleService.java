@@ -4,7 +4,7 @@ import com.github.gpm22.API_Veiculos.Clients.ApiFipeClient;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.VehicleRepository;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
-import com.github.gpm22.API_Veiculos.Utils.Commons;
+import com.github.gpm22.API_Veiculos.Utils.RotationDay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +53,8 @@ public class VehicleService implements IVehicleService {
 
     @Override
     public void setVehicleInformationsAboutRotationAndPrice(Vehicle vehicle){
-        vehicle.setRotationDay(Commons.rotationDay(vehicle.getYear()));
-        vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
+        vehicle.setRotationDay(RotationDay.getRotationDay(vehicle.getYear()));
+        vehicle.setRotationActive(RotationDay.isRotationDayActive(vehicle.getRotationDay()));
         vehicle.setPrice(getFipePrice(vehicle));
     }
 

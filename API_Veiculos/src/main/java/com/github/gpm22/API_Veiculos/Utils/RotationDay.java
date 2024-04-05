@@ -1,14 +1,10 @@
 package com.github.gpm22.API_Veiculos.Utils;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import org.slf4j.Logger;
 import java.util.Calendar;
 
-public class Commons {
+public class RotationDay {
 
-    final private static int[] rotationDay = {
+    final public static int[] rotationDay = {
             Calendar.MONDAY,
             Calendar.MONDAY,
             Calendar.TUESDAY,
@@ -20,16 +16,13 @@ public class Commons {
             Calendar.FRIDAY,
             Calendar.FRIDAY };
 
-    public static Boolean isRotationActive(int rotationDay) {
+    public static Boolean isRotationDayActive(int rotationDay) {
         return rotationDay == Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
     }
 
-    public static int rotationDay(String year) {
+    public static int getRotationDay(String year) {
         int yearLastDigit = Integer.parseInt(year.substring(3, 4));
         return rotationDay[yearLastDigit];
     }
-
-
-
 
 }
