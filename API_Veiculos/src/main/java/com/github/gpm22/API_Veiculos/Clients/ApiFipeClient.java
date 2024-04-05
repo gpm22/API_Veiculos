@@ -6,6 +6,8 @@ import com.github.gpm22.API_Veiculos.Clients.Models.Model;
 import com.github.gpm22.API_Veiculos.Clients.Models.ModelYear;
 import com.github.gpm22.API_Veiculos.Clients.Models.Price;
 import com.github.gpm22.API_Veiculos.Clients.Models.Year;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,50 +17,69 @@ import java.util.stream.Stream;
 @Component
 public class ApiFipeClient {
 
-    private final String URI_BASE = "https://parallelum.com.br/fipe/api/v1/";
+        @Value("${client.url.fipe.api.base}")
+        private final String URI_BASE;
 
-    public Stream<Brand> getBrandList(String type) {
+        @Value("${client.url.fipe.api.brand}")
+        private final String BRAND_PATH;
 
-        ObjectMapper mapper = new ObjectMapper();
+        @Value("${client.url.fipe.api.model}")
+        private final String MODEL_PATH;
 
-        return Arrays
-                .stream(getRetrieve(URI_BASE +type+"/marcas")
-                        .bodyToMono(Brand[].class)
-                        .block())
-                .map(value -> mapper.convertValue(value, Brand.class));
-    }
+        @Value("${client.url.fipe.api.year}")
+        private final String YEAR_PATH;
 
-    public Stream<Model> getModelList(String type, String codeBrand) {
+        private final ObjectMapper mapper = new ObjectMapper();
 
-        return Arrays.stream(getRetrieve(URI_BASE +type+"/marcas/"+codeBrand+"/modelos")
-                .bodyToMono(ModelYear.class)
-                .block()
-                .getModelos());
+        public Stream<Brand> getBrandList(String type) {
 
-    }
+                String uri = URI_BASE + type + "/" + BRAND_PATH;
+                return Arrays.stream(getRetrieve(uri)
+                                .bodyToMono(Brand[].class)
+                                .block())
+                                .map(value -> mapper.convertValue(value, Brand.class));
+        }
 
-    public Stream<Year> getYearlList(String type, String codeBrand, String codeModel) {
+        public Stream<Model> getModelList(String type, String codeBrand) {
 
-        ObjectMapper mapper = new ObjectMapper();
-        return Arrays
-                .stream(getRetrieve(URI_BASE +type+"/marcas/"+codeBrand+"/modelos/"+codeModel+"/anos")
-                        .bodyToMono(Year[].class)
-                        .block())
-                .map(value -> mapper.convertValue(value, Year.class));
-    }
+                String uri = URI_BASE + "/" + type
+                                + "/" + BRAND_PATH + "/" + codeBrand
+                                + "/" + MODEL_PATH;
+                return Arrays.stream(getRetrieve(uri)
+                                .bodyToMono(ModelYear.class)
+                                .block()
+                                .getModelos());
 
-    public Price getFipePrice(String type, String codeBrand, String codeModel, String year) {
+        }
 
-        return getRetrieve(URI_BASE +type+"/marcas/"+codeBrand+"/modelos/"+codeModel+"/anos/"+year)
-                .bodyToMono(Price.class)
-                .block();
-    }
+        public Stream<Year> getYearlList(String type, String codeBrand, String codeModel) {
 
-    private WebClient.ResponseSpec getRetrieve(String uri){
-        return WebClient
-                .create()
-                .method(HttpMethod.GET)
-                .uri(uri)
-                .retrieve();
-    }
+                String uri = URI_BASE + "/" + type + "/" + BRAND_PATH +
+                                "/" + codeBrand + "/" + MODEL_PATH
+                                + "/" + codeModel + "/" + YEAR_PATH;
+
+                return Arrays.stream(getRetrieve(uri)
+                                .bodyToMono(Year[].class)
+                                .block())
+                                .map(value -> mapper.convertValue(value, Year.class));
+        }
+
+        public Price getFipePrice(String type, String codeBrand, String codeModel, String year) {
+
+                String uri = URI_BASE + "/" + type + "/" + BRAND_PATH
+                                + "/" + codeBrand + "/" + MODEL_PATH
+                                + "/" + codeModel + "/" + YEAR_PATH
+                                + "/" + year;
+
+                return getRetrieve(uri)
+                                .bodyToMono(Price.class)
+                                .block();
+        }
+
+        private WebClient.ResponseSpec getRetrieve(String uri) {
+                return WebClient.create()
+                                .method(HttpMethod.GET)
+                                .uri(uri)
+                                .retrieve();
+        }
 }
