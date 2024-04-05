@@ -9,8 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Column;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
+import com.github.gpm22.API_Veiculos.Utils.Commons;
 
 @Entity
 @Table(name = "vehicles")
@@ -60,6 +62,10 @@ public class Vehicle {
         this.getOwners().add(owner);
     }
 
+    public static void updateVehiclesRotationActive(Collection<Vehicle> vehicles){
+        for(Vehicle vehicle: vehicles)
+            vehicle.setRotationActive(Commons.isRotationActive(vehicle.getRotationDay()));
+    }
     public long getId() {
         return id;
     }
