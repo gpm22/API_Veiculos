@@ -45,7 +45,7 @@ public class OwnerService implements IOwnerService {
     }
 
     private void validateOwnerCpf(String ownerCpf){
-        if(!CPFValidator.cpfValidation(ownerCpf)){
+        if(!CPFValidator.validateCPF(ownerCpf)){
             throw new IllegalArgumentException("CPF: " + ownerCpf + " é inválido!");
         }
     }
