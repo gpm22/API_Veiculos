@@ -18,22 +18,22 @@ import java.util.stream.Stream;
 public class ApiFipeClient {
 
         @Value("${client.url.fipe.api.base}")
-        private final String URI_BASE;
+        private String URI_BASE;
 
         @Value("${client.url.fipe.api.brand}")
-        private final String BRAND_PATH;
+        private String BRAND_PATH;
 
         @Value("${client.url.fipe.api.model}")
-        private final String MODEL_PATH;
+        private String MODEL_PATH;
 
         @Value("${client.url.fipe.api.year}")
-        private final String YEAR_PATH;
+        private String YEAR_PATH;
 
         private final ObjectMapper mapper = new ObjectMapper();
 
         public Stream<Brand> getBrandList(String type) {
 
-                String uri = URI_BASE + type + "/" + BRAND_PATH;
+                String uri = URI_BASE + "/" + type + "/" + BRAND_PATH;
                 return Arrays.stream(getRetrieve(uri)
                                 .bodyToMono(Brand[].class)
                                 .block())
