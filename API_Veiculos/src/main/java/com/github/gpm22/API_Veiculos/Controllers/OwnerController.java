@@ -4,7 +4,7 @@ import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Services.IOwnerService;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
-import com.github.gpm22.API_Veiculos.Utils.Commons;
+import com.github.gpm22.API_Veiculos.Utils.ResponseEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class OwnerController {
         try {
             return createOwnerResponse(owner);
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro durante cadastro do usuário:" + owner, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, "Erro durante cadastro do usuário:" + owner, logger);
         }
     }
 
@@ -65,7 +65,7 @@ public class OwnerController {
         try {
             return updateOwnerResponse(emailOrCpf, updatedOwner);
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.NOT_FOUND, "Erro ao atualizar usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao atualizar usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
         }
     }
 
@@ -91,7 +91,7 @@ public class OwnerController {
         try {
             return deleteOwnerResponse(emailOrCpf);
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.NOT_FOUND, "Erro ao excluir usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao excluir usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
         }
     }
 
@@ -112,7 +112,7 @@ public class OwnerController {
         try {
             return getOwnerResponse(emailOrCpf);
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.NOT_FOUND, "Erro ao retornar usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao retornar usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
         }
     }
 
@@ -141,7 +141,7 @@ public class OwnerController {
         try {
             return  registerVehicleResponse(emailOrCpf, vehicleId);
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao cadastrar veículo com id: " + vehicleId, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao cadastrar veículo com id: " + vehicleId, logger);
         }
     }
 
@@ -170,7 +170,10 @@ public class OwnerController {
         try {
             return removeVehicleResponse(emailOrCpf, vehicleId);
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST ,"Erro ao remover o veículo: " + "" + " do usuário: " + "", logger);
+            String errorMessage = "Erro ao remover o veículo com id: "
+                    + vehicleId + " do usuário com "
+                    + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf;
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST , errorMessage , logger);
         }
     }
 

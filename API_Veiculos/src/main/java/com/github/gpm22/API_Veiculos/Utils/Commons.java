@@ -31,11 +31,5 @@ public class Commons {
 
 
 
-    public static ResponseEntity<String> errorResponse(Exception e, HttpStatus httpStatus, String erroMessage, Logger logger){
-        logger.error(erroMessage);
-        e.printStackTrace();
-        return ResponseEntity
-                .status(httpStatus)
-                .body(e.getMessage());
-    }
+
 }

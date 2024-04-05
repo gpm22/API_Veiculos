@@ -3,7 +3,7 @@ package com.github.gpm22.API_Veiculos.Controllers;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Services.IOwnerService;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
-import com.github.gpm22.API_Veiculos.Utils.Commons;
+import com.github.gpm22.API_Veiculos.Utils.ResponseEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class VehicleController {
         try {
             return getVehiclesResponse();
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar todos os veículos", logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar todos os veículos", logger);
         }
     }
 
@@ -58,7 +58,8 @@ public class VehicleController {
         try {
             return  createVehicleResponse(vehicle);
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao cadastrar veículo: " + vehicle, logger);
+            String errorMessage = "Erro ao cadastrar veículo: " + vehicle;
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, errorMessage, logger);
         }
     }
 
@@ -91,7 +92,7 @@ public class VehicleController {
         try {
             return getVehicleByIdResponse(vehicleId);
         } catch (IllegalArgumentException e) {
-            return Commons.errorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar o veículo de id: " + vehicleId, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar o veículo de id: " + vehicleId, logger);
         }
     }
 
