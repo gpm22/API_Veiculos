@@ -35,29 +35,25 @@ public class CPFValidator {
 
         int cpfSum = 0;
 
-        for (int i = 0; i < digitPosition; i++) {
+        for (int i = 0; i < digitPosition; i++)
             cpfSum += cpf[i] * (digitPosition + 1 - i);
-        }
 
         int sumValidationValue = ((cpfSum * 10) % 11);
 
-        if (sumValidationValue == 10) {
+        if (sumValidationValue == 10)
             sumValidationValue = 0;
-        }
 
         return cpf[digitPosition] == sumValidationValue;
     }
 
     private static boolean isAnInvalidKnownCpf(int[] cpf) {
 
-        //verifying if the cpf is not compose of the same number,
+        //verifying if the cpf is not composed of the same number,
         //per example 000.000.000-00 and 111.111.111-11.
 
-        for (int i = 1; i < cpf.length; i++) {
-            if (cpf[i - 1] != cpf[i]) {
+        for (int i = 1; i < cpf.length; i++)
+            if (cpf[i - 1] != cpf[i])
                 return false;
-            }
-        }
 
         return true;
     }
