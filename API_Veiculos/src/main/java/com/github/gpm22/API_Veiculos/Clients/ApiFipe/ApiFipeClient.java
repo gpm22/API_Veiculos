@@ -99,6 +99,9 @@ public class ApiFipeClient {
             if (e.getCause().equals(new TimeoutException()))
                 return new HttpServerErrorException(HttpStatus.GATEWAY_TIMEOUT);
 
+            if(e instanceof HttpServerErrorException)
+                return (HttpServerErrorException) e;
+
             logger.error(e.getMessage());
             return new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
