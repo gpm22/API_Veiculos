@@ -7,8 +7,12 @@ import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Price;
 import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Year;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -33,7 +37,7 @@ public class ApiFipeClient {
                         .bodyToMono(ModelYear.class)
                         .block(TIME_OUT);
 
-                return modelYear.getModelos();
+                return modelYear == null? null : modelYear.getModelos();
         }
 
         public Year[] getYearList(String type, String codeBrand, String codeModel) {
@@ -54,9 +58,19 @@ public class ApiFipeClient {
         }
 
         private WebClient.ResponseSpec getRetrieve(String uri) {
+
                 return WebClient.create()
                                 .method(HttpMethod.GET)
                                 .uri(uri)
-                                .retrieve();
+                                .retrieve()
+                                .onStatus(HttpStatus::isError,
+                                          response -> Mono.error(new HttpServerErrorException(HttpStatus.BAD_GATEWAY, buildErrorMsg(response, uri))));
+        }
+
+        private String buildErrorMsg(ClientResponse response, String uri){
+                String errorResponse = response.bodyToMono(String.class).block(TIME_OUT);
+                return "Erro com código " + response.rawStatusCode()
+                        + " ao chamar URI: " + uri
+                        + ":\n" + errorResponse;
         }
 }
