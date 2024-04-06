@@ -10,15 +10,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
+
 @Component
 public class ApiFipeClient {
+
+        private final Duration TIME_OUT = Duration.ofSeconds(5);
+
         //TODO treat api call errors
         public Brand[] getBrandList(String type) {
 
                 String uri = ApiFipeURL.getBrandURI(type);
                 return getRetrieve(uri)
                         .bodyToMono(Brand[].class)
-                        .block();
+                        .block(TIME_OUT);
         }
 
         public Model[] getModelList(String type, String codeBrand) {
@@ -26,7 +31,7 @@ public class ApiFipeClient {
                 String uri = ApiFipeURL.getModelURI(type, codeBrand);
                 ModelYear modelYear = getRetrieve(uri)
                         .bodyToMono(ModelYear.class)
-                        .block();
+                        .block(TIME_OUT);
 
                 return modelYear.getModelos();
         }
@@ -36,7 +41,7 @@ public class ApiFipeClient {
                 String uri = ApiFipeURL.getYearURI(type, codeBrand, codeModel);
                 return getRetrieve(uri)
                         .bodyToMono(Year[].class)
-                        .block();
+                        .block(TIME_OUT);
         }
 
         public Price getFipePrice(String type, String codeBrand, String codeModel, String year) {
@@ -45,7 +50,7 @@ public class ApiFipeClient {
 
                 return getRetrieve(uri)
                                 .bodyToMono(Price.class)
-                                .block();
+                                .block(TIME_OUT);
         }
 
         private WebClient.ResponseSpec getRetrieve(String uri) {
