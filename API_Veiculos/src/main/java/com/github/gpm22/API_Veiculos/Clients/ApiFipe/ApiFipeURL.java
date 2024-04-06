@@ -1,4 +1,4 @@
-package com.github.gpm22.API_Veiculos.Clients;
+package com.github.gpm22.API_Veiculos.Clients.ApiFipe;
 
 import org.springframework.beans.factory.annotation.Value;
 

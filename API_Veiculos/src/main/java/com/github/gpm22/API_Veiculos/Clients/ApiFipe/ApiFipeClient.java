@@ -1,13 +1,12 @@
-package com.github.gpm22.API_Veiculos.Clients;
+package com.github.gpm22.API_Veiculos.Clients.ApiFipe;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.gpm22.API_Veiculos.Clients.Models.Brand;
-import com.github.gpm22.API_Veiculos.Clients.Models.Model;
-import com.github.gpm22.API_Veiculos.Clients.Models.ModelYear;
-import com.github.gpm22.API_Veiculos.Clients.Models.Price;
-import com.github.gpm22.API_Veiculos.Clients.Models.Year;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Brand;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Model;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.ModelYear;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Price;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Year;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,23 +16,11 @@ import java.util.stream.Stream;
 @Component
 public class ApiFipeClient {
 
-        @Value("${client.url.fipe.api.base}")
-        private String URI_BASE;
-
-        @Value("${client.url.fipe.api.brand}")
-        private String BRAND_PATH;
-
-        @Value("${client.url.fipe.api.model}")
-        private String MODEL_PATH;
-
-        @Value("${client.url.fipe.api.year}")
-        private String YEAR_PATH;
-
         private final ObjectMapper mapper = new ObjectMapper();
 
         public Stream<Brand> getBrandList(String type) {
 
-                String uri = URI_BASE + "/" + type + "/" + BRAND_PATH;
+                String uri = ApiFipeURL.getBrandURI(type);
                 return Arrays.stream(getRetrieve(uri)
                                 .bodyToMono(Brand[].class)
                                 .block())
@@ -42,9 +29,7 @@ public class ApiFipeClient {
 
         public Stream<Model> getModelList(String type, String codeBrand) {
 
-                String uri = URI_BASE + "/" + type
-                                + "/" + BRAND_PATH + "/" + codeBrand
-                                + "/" + MODEL_PATH;
+                String uri = ApiFipeURL.getModelURI(type, codeBrand);
                 return Arrays.stream(getRetrieve(uri)
                                 .bodyToMono(ModelYear.class)
                                 .block()
@@ -52,12 +37,9 @@ public class ApiFipeClient {
 
         }
 
-        public Stream<Year> getYearlList(String type, String codeBrand, String codeModel) {
+        public Stream<Year> getYearList(String type, String codeBrand, String codeModel) {
 
-                String uri = URI_BASE + "/" + type + "/" + BRAND_PATH +
-                                "/" + codeBrand + "/" + MODEL_PATH
-                                + "/" + codeModel + "/" + YEAR_PATH;
-
+                String uri = ApiFipeURL.getYearURI(type, codeBrand, codeModel);
                 return Arrays.stream(getRetrieve(uri)
                                 .bodyToMono(Year[].class)
                                 .block())
@@ -66,10 +48,7 @@ public class ApiFipeClient {
 
         public Price getFipePrice(String type, String codeBrand, String codeModel, String year) {
 
-                String uri = URI_BASE + "/" + type + "/" + BRAND_PATH
-                                + "/" + codeBrand + "/" + MODEL_PATH
-                                + "/" + codeModel + "/" + YEAR_PATH
-                                + "/" + year;
+                String uri = ApiFipeURL.getPriceURI(type, codeBrand, codeModel, year);
 
                 return getRetrieve(uri)
                                 .bodyToMono(Price.class)
