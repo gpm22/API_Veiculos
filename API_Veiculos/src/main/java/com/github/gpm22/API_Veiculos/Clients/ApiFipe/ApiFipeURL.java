@@ -1,20 +1,14 @@
 package com.github.gpm22.API_Veiculos.Clients.ApiFipe;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public class ApiFipeURL {
 
-    @Value("${client.url.fipe.api.base}")
-    private static String URI_BASE;
+    private final static String URI_BASE = "https://parallelum.com.br/fipe/api/v1";
 
-    @Value("${client.url.fipe.api.brand}")
-    private static String BRAND_PATH;
+    private final static String BRAND_PATH = "marcas";
 
-    @Value("${client.url.fipe.api.model}")
-    private static String MODEL_PATH;
+    private final static String MODEL_PATH = "modelos";
 
-    @Value("${client.url.fipe.api.year}")
-    private static String YEAR_PATH;
+    private final static String YEAR_PATH = "anos";
 
     public static String getBrandURI(String type){
         return URI_BASE + "/" + type + "/" + BRAND_PATH;
