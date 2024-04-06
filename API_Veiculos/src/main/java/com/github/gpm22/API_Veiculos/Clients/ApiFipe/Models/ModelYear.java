@@ -1,4 +1,4 @@
-package com.github.gpm22.API_Veiculos.Clients.Models;
+package com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
