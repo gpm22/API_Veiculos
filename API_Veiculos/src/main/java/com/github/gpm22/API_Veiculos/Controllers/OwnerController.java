@@ -43,10 +43,10 @@ public class OwnerController {
     }
 
     private ResponseEntity<Owner> createOwnerResponse(Owner owner){
-        logger.info("Iniciando cadastro do usuario: " + owner);
+        logger.info("Iniciando cadastro do usuario: {}", owner);
         ownerService.validateNewOwnerInformation(owner);
         Owner newOwner = ownerService.saveOrUpdateOwner(owner);
-        logger.info("Cadastro realizado com sucesso do usuario: " + newOwner);
+        logger.info("Cadastro realizado com sucesso do usuario: {}", newOwner);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(newOwner);
@@ -70,7 +70,7 @@ public class OwnerController {
     }
 
     private ResponseEntity<Owner> updateOwnerResponse(String emailOrCpf, Owner updatedOwner){
-        logger.info("Solicitado alteração do " + formatUserMessage(emailOrCpf));
+        logger.info("Solicitado alteração do {}", formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
@@ -79,7 +79,7 @@ public class OwnerController {
 
         Owner savedOwner = ownerService.saveOrUpdateOwner(owner);
 
-        logger.info("Retornando usuário " + savedOwner);
+        logger.info("Retornando usuário atualizado {}", savedOwner);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -96,11 +96,11 @@ public class OwnerController {
     }
 
     private ResponseEntity<Owner> deleteOwnerResponse(String emailOrCpf){
-        logger.info("Solicitado exclusão do " + formatUserMessage(emailOrCpf));
+        logger.info("Solicitado exclusão do {}", formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.deleteOwnerByCpfOrEmail(emailOrCpf);
 
-        logger.info("Exclusão concluída do usuário " + owner);
+        logger.info("Exclusão concluída do usuário {}", owner);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -117,11 +117,11 @@ public class OwnerController {
     }
 
     private ResponseEntity<Owner> getOwnerResponse(String emailOrCpf){
-        logger.info("Solicitado " + formatUserMessage(emailOrCpf));
+        logger.info("Solicitado info sobre o {}", formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
-        logger.info("Retornando usuário " + owner);
+        logger.info("Retornando usuário solictiado {}", owner);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -146,7 +146,7 @@ public class OwnerController {
     }
 
     private ResponseEntity<Vehicle> registerVehicleResponse(String emailOrCpf, long vehicleId){
-        logger.info("O " + formatUserMessage(emailOrCpf) + " solicita o cadastro do veículo com id" + vehicleId);
+        logger.info("O {} solicita o cadastro do veículo com id{}", formatUserMessage(emailOrCpf), vehicleId);
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
@@ -158,7 +158,7 @@ public class OwnerController {
         addedVehicle.addOwner(owner);
         vehicleService.saveOrUpdateVehicle(addedVehicle);
 
-        logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
+        logger.info("Cadastro realizado com sucesso do veículo: {}", addedVehicle);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -178,7 +178,7 @@ public class OwnerController {
     }
 
     private ResponseEntity<Vehicle> removeVehicleResponse(String emailOrCpf, long vehicleId){
-        logger.info("O " + formatUserMessage(emailOrCpf) + " solicita a remoção do veículo com id " + vehicleId);
+        logger.info("O {} solicita a remoção do veículo com id {}", formatUserMessage(emailOrCpf), vehicleId);
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
@@ -190,7 +190,7 @@ public class OwnerController {
         removedVehicle.removeOwner(owner);
         vehicleService.saveOrUpdateVehicle(removedVehicle);
 
-        logger.info("Remoção realizada com sucesso do veículo: " + removedVehicle);
+        logger.info("Remoção realizada com sucesso do veículo: {}", removedVehicle);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
