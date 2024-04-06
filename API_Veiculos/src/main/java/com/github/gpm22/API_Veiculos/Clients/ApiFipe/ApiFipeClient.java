@@ -25,7 +25,6 @@ public class ApiFipeClient {
         Logger logger = LoggerFactory.getLogger(ApiFipeClient.class);
         private final Duration TIME_OUT = Duration.ofSeconds(5);
 
-        //TODO treat api call errors
         public Brand[] getBrandList(String type) {
 
             String uri = ApiFipeURL.getBrandURI(type);
