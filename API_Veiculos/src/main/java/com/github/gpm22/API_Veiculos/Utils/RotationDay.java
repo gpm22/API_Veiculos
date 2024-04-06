@@ -21,7 +21,7 @@ public class RotationDay {
     }
 
     public static int getRotationDay(String year) {
-        int yearLastDigit = Integer.parseInt(year.substring(3, 4));
+        int yearLastDigit = Character.getNumericValue((year.charAt(year.length()-1)));
         return rotationDay[yearLastDigit];
     }
 
