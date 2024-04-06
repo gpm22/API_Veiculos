@@ -64,7 +64,7 @@ public class VehicleController {
     }
 
     private ResponseEntity<Vehicle> createVehicleResponse(Vehicle vehicle){
-        logger.info("Solicitado o cadastro do veículo " + vehicle);
+        logger.info("Solicitado o cadastro do veículo {}", vehicle);
 
         vehicleService.verifyVehicleInfo(vehicle);
         vehicleService.verifyIfVehicleAlreadyExists(vehicle);
@@ -74,7 +74,7 @@ public class VehicleController {
 
         Vehicle addedVehicle = vehicleService.saveOrUpdateVehicle(vehicle);
 
-        logger.info("Cadastro realizado com sucesso do veículo: " + addedVehicle);
+        logger.info("Cadastro realizado com sucesso do veículo: {}", addedVehicle);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -99,7 +99,7 @@ public class VehicleController {
     }
 
     private ResponseEntity<Vehicle> getVehicleByIdResponse(long vehicleId){
-        logger.info("Solicitado o veículo com id: " + vehicleId);
+        logger.info("Solicitado o veículo com id: {}", vehicleId);
 
         Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
 
