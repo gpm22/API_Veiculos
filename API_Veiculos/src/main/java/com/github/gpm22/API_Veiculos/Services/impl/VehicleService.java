@@ -92,9 +92,9 @@ public class VehicleService implements IVehicleService {
 
     @Override
     public void verifyVehicleInfo(Vehicle vehicle) throws IllegalArgumentException {
-        verifyIfStringIsEmpty("marca", vehicle.getBrand());
-        verifyIfStringIsEmpty("modelo", vehicle.getModel());
-        verifyIfStringIsEmpty("ano", vehicle.getYear());
+        verifyIfStringIsBlank("marca", vehicle.getBrand());
+        verifyIfStringIsBlank("modelo", vehicle.getModel());
+        verifyIfStringIsBlank("ano", vehicle.getYear());
         verifyVehicleType(vehicle.getType());
     }
 
@@ -108,9 +108,9 @@ public class VehicleService implements IVehicleService {
             throw new IllegalArgumentException("O parâmetro tipo não condiz com o que está na API FIPE!\nDeve ser um dos seguintes valores: " + ApiFipeURL.VEHICLE_TYPES);
     }
 
-    private void verifyIfStringIsEmpty(String attribute, String value) {
-        if (value == null || value.isEmpty())
-            throw new IllegalArgumentException("Parâmetro " + attribute + " não pode ser vazio!");
+    private void verifyIfStringIsBlank(String attribute, String value) {
+        if (value == null || value.isBlank())
+            throw new IllegalArgumentException("Parâmetro " + attribute + " não pode ser apenas espaços em branco ou vazio!");
     }
 
     @Override

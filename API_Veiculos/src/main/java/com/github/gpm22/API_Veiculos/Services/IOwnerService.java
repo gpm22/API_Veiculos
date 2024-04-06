@@ -1,7 +1,6 @@
 package com.github.gpm22.API_Veiculos.Services;
 
 import com.github.gpm22.API_Veiculos.Entities.Owner;
-import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 
 public interface IOwnerService {
 

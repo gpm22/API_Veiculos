@@ -1,10 +1,8 @@
 package com.github.gpm22.API_Veiculos.Services;
 
-import com.github.gpm22.API_Veiculos.Entities.Owner;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface IVehicleService {
 

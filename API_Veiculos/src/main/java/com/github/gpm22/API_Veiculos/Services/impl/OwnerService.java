@@ -38,10 +38,8 @@ public class OwnerService implements IOwnerService {
     }
 
     private void validateOwnerName(String ownerName) throws IllegalArgumentException{
-        String namePattern = "^(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*(?: (?:(?:e|y|de(?:(?: la| las| lo| los))?|do|dos|da|das|del|van|von|bin|le) )?(?:(?:(?:d'|D'|O'|Mc|Mac|al\\-))?(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+|(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+(?:\\-(?:[\\p{Lu}&&[\\p{IsLatin}]])(?:(?:')?(?:[\\p{Ll}&&[\\p{IsLatin}]]))+)*))+(?: (?:Jr\\.|II|III|IV))?$";
-        if(!Pattern.compile(namePattern).matcher(ownerName).matches()){
-            throw new IllegalArgumentException("Nome: " + ownerName + " é inválido!");
-        }
+        if(ownerName == null || ownerName.isBlank())
+            throw new IllegalArgumentException("Nome: " + ownerName + " é inválido! Não pode ser apenas espaços em branco.");
     }
 
     private void validateOwnerCpf(String ownerCpf){

@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 public class ApiFipeClient {
-
+        //TODO treat api call errors
         public Brand[] getBrandList(String type) {
 
                 String uri = ApiFipeURL.getBrandURI(type);
