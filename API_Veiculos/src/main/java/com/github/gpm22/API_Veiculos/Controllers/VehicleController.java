@@ -56,7 +56,7 @@ public class VehicleController {
     @PostMapping
     public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
         try {
-            return  createVehicleResponse(vehicle);
+            return createVehicleResponse(vehicle);
         } catch (IllegalArgumentException e) {
             String errorMessage = "Erro ao cadastrar veículo: " + vehicle;
             return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, errorMessage, logger);
@@ -68,7 +68,9 @@ public class VehicleController {
 
         vehicleService.verifyVehicleInfo(vehicle);
         vehicleService.verifyIfVehicleAlreadyExists(vehicle);
-        vehicleService.setVehicleInformationsAboutRotationAndPrice(vehicle);
+
+        vehicle.updateRotationInfo();
+        vehicle.setPrice(vehicleService.getFipePrice(vehicle));
 
         Vehicle addedVehicle = vehicleService.saveOrUpdateVehicle(vehicle);
 

@@ -134,6 +134,10 @@ public class Vehicle {
 
     public void setOwners(Set<Owner> owners) {this.owners = owners;}
 
+    public void updateRotationInfo(){
+        this.rotationDay = RotationDay.getRotationDay(this.year);
+        this.isRotationActive = RotationDay.isRotationDayActive(this.rotationDay);
+    }
     @Override
     public String toString() {
         return "Vehicle{" +

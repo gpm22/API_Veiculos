@@ -14,7 +14,7 @@ public interface IVehicleService {
 
     void verifyIfVehicleAlreadyExists(Vehicle vehicle);
 
-    void setVehicleInformationsAboutRotationAndPrice(Vehicle vehicle);
+    String getFipePrice(Vehicle vehicle);
 
     void verifyVehicleInfo(Vehicle vehicle) throws IllegalArgumentException;
 
