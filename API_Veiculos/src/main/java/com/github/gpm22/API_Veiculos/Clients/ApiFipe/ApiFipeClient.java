@@ -1,6 +1,5 @@
 package com.github.gpm22.API_Veiculos.Clients.ApiFipe;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Brand;
 import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Model;
 import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.ModelYear;
