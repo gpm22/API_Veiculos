@@ -2,6 +2,9 @@ package com.github.gpm22.API_Veiculos.Services.impl;
 
 import com.github.gpm22.API_Veiculos.Clients.ApiFipe.ApiFipeClient;
 import com.github.gpm22.API_Veiculos.Clients.ApiFipe.ApiFipeURL;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Brand;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Model;
+import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Year;
 import com.github.gpm22.API_Veiculos.Entities.Vehicle;
 import com.github.gpm22.API_Veiculos.Repositories.VehicleRepository;
 import com.github.gpm22.API_Veiculos.Services.IVehicleService;
@@ -13,10 +16,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
-
 
 @Service
 public class VehicleService implements IVehicleService {
@@ -70,28 +71,34 @@ public class VehicleService implements IVehicleService {
 
     private String getCodeBrand(String type, String vehicleBrand) {
 
-        try {
-            return apiFipeClient.getBrandList(type).filter(brand -> brand.getNome().toLowerCase().equals(vehicleBrand)).findAny().get().getCodigo();
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("O parâmetro marca não condiz com o que está na API FIPE!\n Consultar valores possíveis em: " + ApiFipeURL.getBrandURI(type));
-        }
+        Brand[] brands = apiFipeClient.getBrandList(type);
+
+        for(Brand brand: brands)
+            if(brand.getNome().toLowerCase().equals(vehicleBrand))
+                return brand.getCodigo();
+
+        throw new IllegalArgumentException("O parâmetro marca não condiz com o que está na API FIPE!\n Consultar valores possíveis em: " + ApiFipeURL.getBrandURI(type));
     }
 
     private String getCodeModel(String type, String codeBrand, String vehicleModel) {
-        try {
-            return apiFipeClient.getModelList(type, codeBrand).sequential().filter(model -> model.getNome().toLowerCase().equals(vehicleModel)).findAny().get().getCodigo();
-        } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("O parâmetro modelo não condiz com o que está na API FIPE! \n Consultar valores possíveis em: " + ApiFipeURL.getModelURI(type, codeBrand));
-        }
+        Model[] models = apiFipeClient.getModelList(type, codeBrand);
+
+        for(Model model: models)
+            if(model.getNome().toLowerCase().equals(vehicleModel))
+                return model.getCodigo();
+
+        throw new IllegalArgumentException("O parâmetro modelo não condiz com o que está na API FIPE! \n Consultar valores possíveis em: " + ApiFipeURL.getModelURI(type, codeBrand));
     }
 
     private String getFipeYear(String type, String codeBrand, String codeModel, String vehicleYear) {
-        try {
-            return apiFipeClient.getYearList(type, codeBrand, codeModel).filter(year -> year.getNome().toLowerCase().equals(vehicleYear)).findAny().get().getCodigo();
-        } catch (NoSuchElementException e) {
-            throw new IllegalArgumentException("O parâmetro ano não condiz com o que está na API FIPE! \n Consultar valores possíveis em: " + ApiFipeURL.getYearURI(type, codeBrand, codeModel));
-        }
+
+        Year[] years = apiFipeClient.getYearList(type, codeBrand, codeModel);
+
+        for(Year year: years)
+            if(year.getNome().toLowerCase().equals(vehicleYear))
+                return year.getCodigo();
+
+        throw new IllegalArgumentException("O parâmetro ano não condiz com o que está na API FIPE! \n Consultar valores possíveis em: " + ApiFipeURL.getYearURI(type, codeBrand, codeModel));
     }
 
     @Override
