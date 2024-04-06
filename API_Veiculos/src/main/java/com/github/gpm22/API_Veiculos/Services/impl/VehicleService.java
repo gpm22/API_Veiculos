@@ -12,9 +12,7 @@ import com.github.gpm22.API_Veiculos.Utils.RotationDay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,8 +25,6 @@ public class VehicleService implements IVehicleService {
 
     @Autowired
     private ApiFipeClient apiFipeClient;
-
-    private final Set<String> vehicleTypes = new HashSet<>(Arrays.asList("carros", "motos", "caminhoes", "fipe"));
 
     @Override
     public Vehicle saveOrUpdateVehicle(Vehicle vehicle) throws IllegalArgumentException {
@@ -103,9 +99,9 @@ public class VehicleService implements IVehicleService {
 
     @Override
     public void verifyVehicleInfo(Vehicle vehicle) throws IllegalArgumentException {
-        verifyVehicleBrand(vehicle.getBrand());
-        verifyVehicleModel(vehicle.getModel());
-        verifyVehicleYear(vehicle.getYear());
+        verifyIfStringIsEmpty("marca", vehicle.getBrand());
+        verifyIfStringIsEmpty("modelo", vehicle.getModel());
+        verifyIfStringIsEmpty("ano", vehicle.getYear());
         verifyVehicleType(vehicle.getType());
     }
 
@@ -114,32 +110,14 @@ public class VehicleService implements IVehicleService {
         return vehicleRepository.findAll();
     }
 
-    private void verifyVehicleBrand(String brand) {
-        verifyIfStringIsEmpty("marca", brand);
-    }
-
-    private void verifyVehicleModel(String model) {
-        verifyIfStringIsEmpty("modelo", model);
-    }
-
-    private void verifyVehicleYear(String year) {
-        verifyIfStringIsEmpty("ano", year);
-    }
-
     private void verifyVehicleType(String type) {
-        if(!vehicleTypes.contains(type)){
-            throw new IllegalArgumentException("O parâmetro tipo não condiz com o que está na API FIPE!\nDeve ser: " + vehicleTypes);
-        }
+        if(!ApiFipeURL.VEHICLE_TYPES.contains(type))
+            throw new IllegalArgumentException("O parâmetro tipo não condiz com o que está na API FIPE!\nDeve ser um dos seguintes valores: " + ApiFipeURL.VEHICLE_TYPES);
     }
 
     private void verifyIfStringIsEmpty(String attribute, String value) {
-        if (value == null) {
+        if (value == null || value.isEmpty())
             throw new IllegalArgumentException("Parâmetro " + attribute + " não pode ser vazio!");
-        }
-
-        if (value.isEmpty()) {
-            throw new IllegalArgumentException("Parâmetro " + attribute + " não pode ser vazio!");
-        }
     }
 
     @Override

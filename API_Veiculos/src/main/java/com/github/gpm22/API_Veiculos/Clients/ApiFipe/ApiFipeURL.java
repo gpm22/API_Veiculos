@@ -1,6 +1,11 @@
 package com.github.gpm22.API_Veiculos.Clients.ApiFipe;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ApiFipeURL {
+
+    public final static List<String> VEHICLE_TYPES = Arrays.asList("carros", "motos", "caminhoes", "fipe");
 
     private final static String URI_BASE = "https://parallelum.com.br/fipe/api/v1";
 
