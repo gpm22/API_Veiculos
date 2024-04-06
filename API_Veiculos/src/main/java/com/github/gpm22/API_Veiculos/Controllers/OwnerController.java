@@ -65,12 +65,12 @@ public class OwnerController {
         try {
             return updateOwnerResponse(emailOrCpf, updatedOwner);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao atualizar usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao atualizar " + formatUserMessage(emailOrCpf), logger);
         }
     }
 
     private ResponseEntity<Owner> updateOwnerResponse(String emailOrCpf, Owner updatedOwner){
-        logger.info("Solicitado alteração do usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf);
+        logger.info("Solicitado alteração do " + formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
@@ -91,12 +91,12 @@ public class OwnerController {
         try {
             return deleteOwnerResponse(emailOrCpf);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao excluir usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao excluir o " + formatUserMessage(emailOrCpf), logger);
         }
     }
 
     private ResponseEntity<Owner> deleteOwnerResponse(String emailOrCpf){
-        logger.info("Solicitado exclusão usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf);
+        logger.info("Solicitado exclusão do " + formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.deleteOwnerByCpfOrEmail(emailOrCpf);
 
@@ -112,12 +112,12 @@ public class OwnerController {
         try {
             return getOwnerResponse(emailOrCpf);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao retornar usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao retornar " + formatUserMessage(emailOrCpf), logger);
         }
     }
 
     private ResponseEntity<Owner> getOwnerResponse(String emailOrCpf){
-        logger.info("Solicitado usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf);
+        logger.info("Solicitado " + formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
@@ -146,7 +146,7 @@ public class OwnerController {
     }
 
     private ResponseEntity<Vehicle> registerVehicleResponse(String emailOrCpf, long vehicleId){
-        logger.info("O usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf + " solicita o cadastro do veículo com id" + vehicleId);
+        logger.info("O " + formatUserMessage(emailOrCpf) + " solicita o cadastro do veículo com id" + vehicleId);
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
@@ -171,14 +171,14 @@ public class OwnerController {
             return removeVehicleResponse(emailOrCpf, vehicleId);
         } catch (IllegalArgumentException e) {
             String errorMessage = "Erro ao remover o veículo com id: "
-                    + vehicleId + " do usuário com "
-                    + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf;
+                    + vehicleId + " do "
+                    + formatUserMessage(emailOrCpf);
             return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST , errorMessage , logger);
         }
     }
 
     private ResponseEntity<Vehicle> removeVehicleResponse(String emailOrCpf, long vehicleId){
-        logger.info("O usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf + " solicita a remoção do veículo com id " + vehicleId);
+        logger.info("O " + formatUserMessage(emailOrCpf) + " solicita a remoção do veículo com id " + vehicleId);
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
 
@@ -195,6 +195,10 @@ public class OwnerController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(removedVehicle);
+    }
+
+    private String formatUserMessage(String emailOrCpf){
+        return "usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf;
     }
 
 }
