@@ -10,40 +10,34 @@ import com.github.gpm22.API_Veiculos.Clients.ApiFipe.Models.Year;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 @Component
 public class ApiFipeClient {
 
-        private final ObjectMapper mapper = new ObjectMapper();
-
-        public Stream<Brand> getBrandList(String type) {
+        public Brand[] getBrandList(String type) {
 
                 String uri = ApiFipeURL.getBrandURI(type);
-                return Arrays.stream(getRetrieve(uri)
-                                .bodyToMono(Brand[].class)
-                                .block())
-                                .map(value -> mapper.convertValue(value, Brand.class));
+                return getRetrieve(uri)
+                        .bodyToMono(Brand[].class)
+                        .block();
         }
 
-        public Stream<Model> getModelList(String type, String codeBrand) {
+        public Model[] getModelList(String type, String codeBrand) {
 
                 String uri = ApiFipeURL.getModelURI(type, codeBrand);
-                return Arrays.stream(getRetrieve(uri)
-                                .bodyToMono(ModelYear.class)
-                                .block()
-                                .getModelos());
+                ModelYear modelYear = getRetrieve(uri)
+                        .bodyToMono(ModelYear.class)
+                        .block();
 
+                return modelYear.getModelos();
         }
 
-        public Stream<Year> getYearList(String type, String codeBrand, String codeModel) {
+        public Year[] getYearList(String type, String codeBrand, String codeModel) {
 
                 String uri = ApiFipeURL.getYearURI(type, codeBrand, codeModel);
-                return Arrays.stream(getRetrieve(uri)
-                                .bodyToMono(Year[].class)
-                                .block())
-                                .map(value -> mapper.convertValue(value, Year.class));
+                return getRetrieve(uri)
+                        .bodyToMono(Year[].class)
+                        .block();
         }
 
         public Price getFipePrice(String type, String codeBrand, String codeModel, String year) {
