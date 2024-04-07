@@ -71,8 +71,8 @@ public class VehicleServiceTest {
         Vehicle nonExistentModel = new Vehicle("A", "C", "2005-2", "carros");
         Assertions.assertThrows(IllegalArgumentException.class,  () -> vehicleService.getFipePrice(nonExistentModel));
 
-        Vehicle nonExistenYear = new Vehicle("A", "B", "2005-3", "carros");
-        Assertions.assertThrows(IllegalArgumentException.class,  () -> vehicleService.getFipePrice(nonExistenYear));
+        Vehicle nonExistentYear = new Vehicle("A", "B", "2005-3", "carros");
+        Assertions.assertThrows(IllegalArgumentException.class,  () -> vehicleService.getFipePrice(nonExistentYear));
     }
 
     @Test
