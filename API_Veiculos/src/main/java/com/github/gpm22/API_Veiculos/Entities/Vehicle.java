@@ -34,7 +34,7 @@ public class Vehicle {
     private int rotationDay;
     @Column(name = "vehicle_is_rotation_active")
     private Boolean isRotationActive;
-    @Column(name = "vehicle_is_price")
+    @Column(name = "vehicle_price")
     private String price;
     @JsonIgnore
     @ManyToMany
