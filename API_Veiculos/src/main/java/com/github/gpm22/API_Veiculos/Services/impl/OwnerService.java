@@ -19,6 +19,7 @@ public class OwnerService implements IOwnerService {
 
     @Override
     public Owner saveOrUpdateOwner(Owner owner) throws IllegalArgumentException {
+        owner.setCpf(CPFValidator.formatCPF(owner.getCpf()));
         return ownerRepository.save(owner);
     }
 
@@ -58,8 +59,9 @@ public class OwnerService implements IOwnerService {
     }
 
     private void verifyIfCpfIsUnique(Owner owner) throws IllegalArgumentException{
-        if (ownerRepository.findByCpf(owner.getCpf()) != null)
-            throw new IllegalArgumentException("CPF: " + owner.getCpf() + " já utilizado!");
+        String formattedCPF = CPFValidator.formatCPF(owner.getCpf());
+        if (ownerRepository.findByCpf(formattedCPF) != null)
+            throw new IllegalArgumentException("CPF: " + formattedCPF + " já utilizado!");
     }
 
     private void verifyIfEmailIsUnique(Owner owner) throws IllegalArgumentException{
