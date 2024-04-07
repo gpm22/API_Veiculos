@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ApiFipeURL {
 
-    public final static List<String> VEHICLE_TYPES = Arrays.asList("carros", "motos", "caminhoes", "fipe");
+    public final static List<String> VEHICLE_TYPES = Arrays.asList("carros", "motos", "caminhoes");
 
     private final static String URI_BASE = "https://parallelum.com.br/fipe/api/v1";
 

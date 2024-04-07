@@ -43,8 +43,6 @@ public class VehicleServiceTest {
         vehicleService.verifyVehicleInfo(motorcycle);
         Vehicle truck = new Vehicle("A", "B", "9230", "caminhoes");
         vehicleService.verifyVehicleInfo(truck);
-        Vehicle fipe = new Vehicle("A", "B", "2432", "fipe");
-        vehicleService.verifyVehicleInfo(fipe);
     }
 
     @Test
