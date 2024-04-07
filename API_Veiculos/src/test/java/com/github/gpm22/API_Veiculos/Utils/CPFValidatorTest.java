@@ -56,4 +56,20 @@ public class CPFValidatorTest {
         Assertions.assertTrue(CPFValidator.validateCPF(cpf.substring(0,6)+"."+cpf.substring(6)));
         Assertions.assertTrue(CPFValidator.validateCPF(cpf));
     }
+
+    @Test
+    public void testFormatCPFCorrect(){
+        Assertions.assertEquals("012.345.678-90", CPFValidator.formatCPF("012ahdksadhkasjd345akaksakj678asdsadas90"));
+        Assertions.assertEquals("012.345.678-90", CPFValidator.formatCPF("012.345.678-90"));
+        Assertions.assertEquals("012.345.678-90", CPFValidator.formatCPF("01234567890"));
+    }
+
+
+    @Test
+    public void testFormatCPFWrongThrows(){
+        Assertions.assertThrows(IllegalArgumentException.class, () -> CPFValidator.formatCPF("01ahdksadhkasjd345akaksakj678asdsadas90"));
+        Assertions.assertThrows(IllegalArgumentException.class, () ->  CPFValidator.formatCPF("012.45.678-90"));
+        Assertions.assertThrows(IllegalArgumentException.class, () ->  CPFValidator.formatCPF("0123456890"));
+        Assertions.assertThrows(IllegalArgumentException.class, () ->  CPFValidator.formatCPF(""));
+    }
 }

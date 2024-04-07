@@ -5,6 +5,19 @@ import java.util.stream.Stream;
 
 public class CPFValidator {
 
+    public static String formatCPF(String cpf){
+
+        String newCPF = cpf.replaceAll("[^\\d]", "");
+
+        if(newCPF.length() != 11)
+            throw new IllegalArgumentException("CPF must contain 11 digits");
+
+        return newCPF.substring(0,3) + "."
+            + newCPF.substring(3,6) + "."
+            + newCPF.substring(6, 9) + "-"
+            + newCPF.substring(9);
+    }
+
     public static Boolean validateCPF(String cpf){
         return validateCPFFormat(cpf) && validateCPFCalculation(cpf);
     }
