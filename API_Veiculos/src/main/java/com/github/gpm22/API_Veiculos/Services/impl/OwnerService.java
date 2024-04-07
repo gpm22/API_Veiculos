@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -43,46 +42,40 @@ public class OwnerService implements IOwnerService {
     }
 
     private void validateOwnerCpf(String ownerCpf){
-        if(!CPFValidator.validateCPF(ownerCpf)){
+        if(!CPFValidator.validateCPF(ownerCpf))
             throw new IllegalArgumentException("CPF: " + ownerCpf + " é inválido!");
-        }
     }
 
     private void validateOwnerEmail(String ownerEmail) throws IllegalArgumentException {
         String emailPattern = "^[A-Za-z0-9+_.-]+@(.+)$";
-        if(!Pattern.compile(emailPattern).matcher(ownerEmail).matches()){
+        if(!Pattern.compile(emailPattern).matcher(ownerEmail).matches())
             throw new IllegalArgumentException("Email: " + ownerEmail + " é inválido!");
-        }
     }
 
     private void validateOwnerBirthDate(Date ownerBirthDate){
-        if (ownerBirthDate == null) {
+        if (ownerBirthDate == null)
             throw new IllegalArgumentException("Data de aniversário inválida!");
-        }
     }
 
     private void verifyIfCpfIsUnique(Owner owner) throws IllegalArgumentException{
-        if (ownerRepository.findByCpf(owner.getCpf()) != null) {
+        if (ownerRepository.findByCpf(owner.getCpf()) != null)
             throw new IllegalArgumentException("CPF: " + owner.getCpf() + " já utilizado!");
-        }
     }
 
     private void verifyIfEmailIsUnique(Owner owner) throws IllegalArgumentException{
-        if (ownerRepository.findByEmail(owner.getEmail()) != null) {
+        if (ownerRepository.findByEmail(owner.getEmail()) != null)
             throw new IllegalArgumentException("Email: " + owner.getEmail() + " já utilizado!");
-        }
     }
 
     @Override
     public Owner getOwnerByCpfOrEmail(String cpfOrEmail) {
-        Optional<Owner> owner = Optional.ofNullable(ownerRepository.findByCpfOrEmail(cpfOrEmail, cpfOrEmail));
+        Owner owner = ownerRepository.findByCpfOrEmail(cpfOrEmail, cpfOrEmail);
 
-        if (owner.isPresent()) {
-            Vehicle.updateVehiclesRotationActive(owner.get().getVehicles());
-            return owner.get();
-        } else {
+        if (owner == null)
             throw new IllegalArgumentException("Não existe usuário com o " + (cpfOrEmail.contains("@") ? "email" : "cpf") + ": " + cpfOrEmail);
-        }
+
+        Vehicle.updateVehiclesRotationActive(owner.getVehicles());
+        return owner;
     }
 
     @Override
@@ -93,15 +86,13 @@ public class OwnerService implements IOwnerService {
     }
 
     private void validateCpfChangedUniqueness(Owner owner, Owner updatedOwner) {
-        if(!owner.getCpf().equals(updatedOwner.getCpf())){
+        if(!owner.getCpf().equals(updatedOwner.getCpf()))
             verifyIfCpfIsUnique(updatedOwner);
-        }
     }
 
     private void validateEmailChangedUniqueness(Owner owner, Owner updatedOwner) {
-        if(!owner.getEmail().equals(updatedOwner.getEmail())){
+        if(!owner.getEmail().equals(updatedOwner.getEmail()))
             verifyIfEmailIsUnique(updatedOwner);
-        }
     }
 
     @Override
