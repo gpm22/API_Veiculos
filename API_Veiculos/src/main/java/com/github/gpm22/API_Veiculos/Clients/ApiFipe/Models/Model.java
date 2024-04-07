@@ -7,6 +7,15 @@ public class Model {
     private String nome;
     private String codigo;
 
+    public Model(){
+
+    }
+
+    public Model(String nome, String codigo){
+        this.nome = nome;
+        this.codigo = codigo;
+    }
+
     public String getNome() {
         return nome;
     }

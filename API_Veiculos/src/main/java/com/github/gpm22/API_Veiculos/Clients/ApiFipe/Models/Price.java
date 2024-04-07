@@ -7,6 +7,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Price {
     private String valor;
 
+    public Price(){
+
+    }
+
+    public Price(String valor){
+        this.valor = valor;
+    }
+
     public String getValor() {
         return valor;
     }

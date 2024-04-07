@@ -7,6 +7,15 @@ public class Year {
     private String nome;
     private String codigo;
 
+    public Year(){
+
+    }
+
+    public Year(String nome, String codigo){
+        this.nome = nome;
+        this.codigo = codigo;
+    }
+
     public String getNome() {
         return nome;
     }
