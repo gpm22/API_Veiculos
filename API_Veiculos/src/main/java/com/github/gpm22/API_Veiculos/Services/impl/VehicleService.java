@@ -41,9 +41,8 @@ public class VehicleService implements IVehicleService {
     public void verifyIfVehicleAlreadyExists(Vehicle vehicle) {
         Vehicle existingVehicle = vehicleRepository.findByModelAndYear(vehicle.getModel(), vehicle.getYear());
 
-        if (existingVehicle != null) {
+        if (existingVehicle != null)
             throw new IllegalArgumentException("Esse veículo já foi anteriormente cadastrado: " + existingVehicle.getId());
-        }
     }
 
     @Override
@@ -124,11 +123,10 @@ public class VehicleService implements IVehicleService {
     public Vehicle getVehicleById(long vehicleId) {
         Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
 
-        if (vehicle.isPresent()) {
+        if (vehicle.isPresent())
             return vehicle.get();
-        } else {
-            throw new IllegalArgumentException("Não existe veículo com id: " + vehicleId);
-        }
+
+        throw new IllegalArgumentException("Não existe veículo com id: " + vehicleId);
     }
 
 }
