@@ -23,7 +23,7 @@ import java.util.Set;
 public class Owner {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "owner_id")
     private long id;
     @Column(name = "owner_name", nullable = false)

@@ -19,7 +19,7 @@ import com.github.gpm22.API_Veiculos.Utils.RotationDay;
 public class Vehicle {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "vehicle_id")
     private long id;
     @Column(name = "vehicle_brand", nullable = false)
