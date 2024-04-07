@@ -21,7 +21,9 @@ public class RotationDay {
     }
 
     public static int getRotationDay(String year) {
-        int yearLastDigit = Character.getNumericValue((year.charAt(year.length()-1)));
+        // The year will be 4 digits, like 2004, or 6 chars, like 1992-1
+        // So we use always the fourth digit
+        int yearLastDigit = Character.getNumericValue((year.charAt(3)));
         return rotationDay[yearLastDigit];
     }
 
