@@ -37,7 +37,7 @@ public class Vehicle {
     @Column(name = "vehicle_price")
     private String price;
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(mappedBy = "vehicles")
     private Set<Owner> owners;
 
     public Vehicle() {
@@ -50,22 +50,24 @@ public class Vehicle {
         this.type = type;
     }
 
-    public void removeOwner(Owner owner){
-        if(!this.getOwners().contains(owner)){
-            throw new IllegalArgumentException("O veículo de id " + this.getId() + " não possui o usuário de cpf: " + owner.getCpf());
+    public void removeOwner(Owner owner) {
+        if (!this.getOwners().contains(owner)) {
+            throw new IllegalArgumentException(
+                    "O veículo de id " + this.getId() + " não possui o usuário de cpf: " + owner.getCpf());
         }
 
         this.getOwners().remove(owner);
     }
 
-    public void addOwner(Owner owner){
+    public void addOwner(Owner owner) {
         this.getOwners().add(owner);
     }
 
-    public static void updateVehiclesRotationActive(Collection<Vehicle> vehicles){
-        for(Vehicle vehicle: vehicles)
+    public static void updateVehiclesRotationActive(Collection<Vehicle> vehicles) {
+        for (Vehicle vehicle : vehicles)
             vehicle.setRotationActive(RotationDay.isRotationDayActive(vehicle.getRotationDay()));
     }
+
     public long getId() {
         return id;
     }
@@ -130,14 +132,19 @@ public class Vehicle {
         this.price = price;
     }
 
-    public Set<Owner> getOwners() { return owners; }
+    public Set<Owner> getOwners() {
+        return owners;
+    }
 
-    public void setOwners(Set<Owner> owners) {this.owners = owners;}
+    public void setOwners(Set<Owner> owners) {
+        this.owners = owners;
+    }
 
-    public void updateRotationInfo(){
+    public void updateRotationInfo() {
         this.rotationDay = RotationDay.getRotationDay(this.year);
         this.isRotationActive = RotationDay.isRotationDayActive(this.rotationDay);
     }
+
     @Override
     public String toString() {
         return "Vehicle{" +
@@ -154,10 +161,15 @@ public class Vehicle {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Vehicle vehicle = (Vehicle) o;
-        return getId() == vehicle.getId() && getRotationDay() == vehicle.getRotationDay() && getBrand().equals(vehicle.getBrand()) && getModel().equals(vehicle.getModel()) && getYear().equals(vehicle.getYear()) && getType().equals(vehicle.getType()) && getPrice().equals(vehicle.getPrice());
+        return getId() == vehicle.getId() && getRotationDay() == vehicle.getRotationDay()
+                && getBrand().equals(vehicle.getBrand()) && getModel().equals(vehicle.getModel())
+                && getYear().equals(vehicle.getYear()) && getType().equals(vehicle.getType())
+                && getPrice().equals(vehicle.getPrice());
     }
 
     @Override

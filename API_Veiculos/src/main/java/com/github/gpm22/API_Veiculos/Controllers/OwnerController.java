@@ -172,9 +172,6 @@ public class OwnerController {
         owner.addVehicle(addedVehicle);
         ownerService.saveOrUpdateOwner(owner);
 
-        addedVehicle.addOwner(owner);
-        vehicleService.saveOrUpdateVehicle(addedVehicle);
-
         logger.info("Cadastro realizado com sucesso do veículo: {}", addedVehicle);
 
         return ResponseEntity
@@ -204,9 +201,6 @@ public class OwnerController {
 
         owner.removeVehicle(removedVehicle);
         ownerService.saveOrUpdateOwner(owner);
-
-        removedVehicle.removeOwner(owner);
-        vehicleService.saveOrUpdateVehicle(removedVehicle);
 
         logger.info("Remoção realizada com sucesso do veículo: {}", removedVehicle);
 
