@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/usuario")
 public class OwnerController {
 
@@ -46,11 +48,12 @@ public class OwnerController {
         try {
             return createOwnerResponse(owner);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, "Erro durante cadastro do usuário:" + owner, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
+                    "Erro durante cadastro do usuário:" + owner, logger);
         }
     }
 
-    private ResponseEntity<Owner> createOwnerResponse(Owner owner){
+    private ResponseEntity<Owner> createOwnerResponse(Owner owner) {
         logger.info("Iniciando cadastro do usuario: {}", owner);
         ownerService.validateNewOwnerInformation(owner);
         Owner newOwner = ownerService.saveOrUpdateOwner(owner);
@@ -69,15 +72,17 @@ public class OwnerController {
     }
 
     @PutMapping("/{email_ou_cpf}")
-    public ResponseEntity<?> updateOwner(@PathVariable(value = "email_ou_cpf") String emailOrCpf, @RequestBody Owner updatedOwner) {
+    public ResponseEntity<?> updateOwner(@PathVariable(value = "email_ou_cpf") String emailOrCpf,
+            @RequestBody Owner updatedOwner) {
         try {
             return updateOwnerResponse(emailOrCpf, updatedOwner);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao atualizar " + formatUserMessage(emailOrCpf), logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
+                    "Erro ao atualizar " + formatUserMessage(emailOrCpf), logger);
         }
     }
 
-    private ResponseEntity<Owner> updateOwnerResponse(String emailOrCpf, Owner updatedOwner){
+    private ResponseEntity<Owner> updateOwnerResponse(String emailOrCpf, Owner updatedOwner) {
         logger.info("Solicitado alteração do {}", formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
@@ -99,11 +104,12 @@ public class OwnerController {
         try {
             return deleteOwnerResponse(emailOrCpf);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao excluir o " + formatUserMessage(emailOrCpf), logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
+                    "Erro ao excluir o " + formatUserMessage(emailOrCpf), logger);
         }
     }
 
-    private ResponseEntity<Owner> deleteOwnerResponse(String emailOrCpf){
+    private ResponseEntity<Owner> deleteOwnerResponse(String emailOrCpf) {
         logger.info("Solicitado exclusão do {}", formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.deleteOwnerByCpfOrEmail(emailOrCpf);
@@ -120,11 +126,12 @@ public class OwnerController {
         try {
             return getOwnerResponse(emailOrCpf);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND, "Erro ao retornar " + formatUserMessage(emailOrCpf), logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
+                    "Erro ao retornar " + formatUserMessage(emailOrCpf), logger);
         }
     }
 
-    private ResponseEntity<Owner> getOwnerResponse(String emailOrCpf){
+    private ResponseEntity<Owner> getOwnerResponse(String emailOrCpf) {
         logger.info("Solicitado info sobre o {}", formatUserMessage(emailOrCpf));
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
@@ -145,15 +152,17 @@ public class OwnerController {
     }
 
     @PutMapping("/{email_ou_cpf}/registro-veiculo/{vehicle_id}")
-    public ResponseEntity<?> registerVehicle(@PathVariable(value = "email_ou_cpf") String emailOrCpf, @PathVariable(value = "vehicle_id") long vehicleId ) {
+    public ResponseEntity<?> registerVehicle(@PathVariable(value = "email_ou_cpf") String emailOrCpf,
+            @PathVariable(value = "vehicle_id") long vehicleId) {
         try {
-            return  registerVehicleResponse(emailOrCpf, vehicleId);
+            return registerVehicleResponse(emailOrCpf, vehicleId);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao cadastrar veículo com id: " + vehicleId, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
+                    "Erro ao cadastrar veículo com id: " + vehicleId, logger);
         }
     }
 
-    private ResponseEntity<Vehicle> registerVehicleResponse(String emailOrCpf, long vehicleId){
+    private ResponseEntity<Vehicle> registerVehicleResponse(String emailOrCpf, long vehicleId) {
         logger.info("O {} solicita o cadastro do veículo com id{}", formatUserMessage(emailOrCpf), vehicleId);
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
@@ -174,18 +183,19 @@ public class OwnerController {
     }
 
     @DeleteMapping("/{email_ou_cpf}/registro-veiculo/{vehicle_id}")
-    public ResponseEntity<?> removeVehicleRegister(@PathVariable(value = "email_ou_cpf") String emailOrCpf, @PathVariable(value = "vehicle_id") long vehicleId) {
+    public ResponseEntity<?> removeVehicleRegister(@PathVariable(value = "email_ou_cpf") String emailOrCpf,
+            @PathVariable(value = "vehicle_id") long vehicleId) {
         try {
             return removeVehicleResponse(emailOrCpf, vehicleId);
         } catch (IllegalArgumentException e) {
             String errorMessage = "Erro ao remover o veículo com id: "
                     + vehicleId + " do "
                     + formatUserMessage(emailOrCpf);
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST , errorMessage , logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, errorMessage, logger);
         }
     }
 
-    private ResponseEntity<Vehicle> removeVehicleResponse(String emailOrCpf, long vehicleId){
+    private ResponseEntity<Vehicle> removeVehicleResponse(String emailOrCpf, long vehicleId) {
         logger.info("O {} solicita a remoção do veículo com id {}", formatUserMessage(emailOrCpf), vehicleId);
 
         Owner owner = ownerService.getOwnerByCpfOrEmail(emailOrCpf);
@@ -205,7 +215,7 @@ public class OwnerController {
                 .body(removedVehicle);
     }
 
-    private String formatUserMessage(String emailOrCpf){
+    private String formatUserMessage(String emailOrCpf) {
         return "usuário com " + (emailOrCpf.contains("@") ? "email " : "cpf ") + emailOrCpf;
     }
 

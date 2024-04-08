@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collection;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/veiculo")
 public class VehicleController {
 
@@ -45,11 +47,12 @@ public class VehicleController {
         try {
             return getVehiclesResponse();
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar todos os veículos", logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
+                    "Erro ao retornar todos os veículos", logger);
         }
     }
 
-    private ResponseEntity<Collection<Vehicle>> getVehiclesResponse(){
+    private ResponseEntity<Collection<Vehicle>> getVehiclesResponse() {
         logger.info("Solicitados todos os veículos.");
 
         Collection<Vehicle> vehicles = vehicleService.getAllVehicles();
@@ -69,7 +72,7 @@ public class VehicleController {
         }
     }
 
-    private ResponseEntity<Vehicle> createVehicleResponse(Vehicle vehicle){
+    private ResponseEntity<Vehicle> createVehicleResponse(Vehicle vehicle) {
         logger.info("Solicitado o cadastro do veículo {}", vehicle);
 
         vehicleService.verifyVehicleInfo(vehicle);
@@ -100,11 +103,12 @@ public class VehicleController {
         try {
             return getVehicleByIdResponse(vehicleId);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, "Erro ao retornar o veículo de id: " + vehicleId, logger);
+            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
+                    "Erro ao retornar o veículo de id: " + vehicleId, logger);
         }
     }
 
-    private ResponseEntity<Vehicle> getVehicleByIdResponse(long vehicleId){
+    private ResponseEntity<Vehicle> getVehicleByIdResponse(long vehicleId) {
         logger.info("Solicitado o veículo com id: {}", vehicleId);
 
         Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
