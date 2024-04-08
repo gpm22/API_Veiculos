@@ -31,6 +31,29 @@ gradle bootRun
 
 After running this command, a tomcat server containing the API will be available on port **8080**.
 
+## Tester User and Data
+
+There is already an user add and 8 vehicles, so playing with the API will be easier.
+
+The tester user has the following data:
+
+| Id   | Name   | Email             | CPF            | Birth date |
+| ---- | ------ | ----------------- | -------------- | ---------- |
+| 1    | tester | tester@tester.com | 000.000.000-00 | 12/12/1995 |
+
+The added cars are the following:
+
+|      | Brand           | Model                             | Year          | Type      | Rotation Day | Is Rotation Day Active? | Price         |
+| ---- | --------------- | --------------------------------- | ------------- | --------- | ------------ | ----------------------- | ------------- |
+| 1    | AGRALE          | 0000 LX 2p (diesel) (E5)          | 2017          | CAMINHOES | Thursday     | false                   | R$ 157.078,00 |
+| 2    | FORD            | F-4 MILHA CD 2.8 4x2 (diesel)(E5) | 2019          | CAMINHOES | Friday       | false                   | R$ 183.203,00 |
+| 3    | Toyota          | Paseo                             | 1995 Gasolina | CARROS    | Wednesday    | false                   | R$ 27.146,00  |
+| 4    | Volvo           | XC 40 Twin Ultimate (Elétrico)    | 2023 Gasolina | CARROS    | Tuesday      | false                   | R$ 298.549,00 |
+| 5    | ADLY            | JAGUAR JT 50                      | 1999          | MOTOS     | Friday       | false                   | R$ 1.595,00   |
+| 6    | YAMAHA          | YFZ 450/ YZ 450 F 449cc           | 2024          | MOTOS     | Wednesday    | false                   | R$ 76.907,00  |
+| 7    | HARLEY-DAVIDSON | CVO BREAKOUT FXSBSE               | 2014          | MOTOS     | Wednesday    | false                   | R$ 89.690,00  |
+| 8    | ZONTES          | T 310                             | 2024          | MOTOS     | Wednesday    | false                   | R$ 29.061,00  |
+
 ## Users Registration
 
 User registration is made by sending a **POST** request to the **/apiveiculos/v1/usuario/** endpoint. The request body must contain a **JSON** with the following mandatory information:

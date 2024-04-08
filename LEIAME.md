@@ -29,6 +29,29 @@ gradle bootRun
 
 Após rodar esse comando, um servidor tomcat contendo a API será subido na porta **8080**. 
 
+## Usuário e dados de teste
+
+Na API já estão inseridos um usuário e 8 veículos para facilitar testar/usar a API.
+
+O usuário de teste possui os seguintes dados:
+
+| Id   | Name   | Email             | CPF            | Birth date |
+| ---- | ------ | ----------------- | -------------- | ---------- |
+| 1    | tester | tester@tester.com | 000.000.000-00 | 12/12/1995 |
+
+Os carros adicionados são os seguintes:
+
+|      | Mara            | Modelo                            | Ano           | Tipo      | Dia do Rodízio | O rodízio está ativo? | Preço         |
+| ---- | --------------- | --------------------------------- | ------------- | --------- | -------------- | --------------------- | ------------- |
+| 1    | AGRALE          | 0000 LX 2p (diesel) (E5)          | 2017          | CAMINHOES | Quinta-Feira   | false                 | R$ 157.078,00 |
+| 2    | FORD            | F-4 MILHA CD 2.8 4x2 (diesel)(E5) | 2019          | CAMINHOES | Sexta-Feira    | false                 | R$ 183.203,00 |
+| 3    | Toyota          | Paseo                             | 1995 Gasolina | CARROS    | Quarta-Feira   | false                 | R$ 27.146,00  |
+| 4    | Volvo           | XC 40 Twin Ultimate (Elétrico)    | 2023 Gasolina | CARROS    | Terça-Feirta   | false                 | R$ 298.549,00 |
+| 5    | ADLY            | JAGUAR JT 50                      | 1999          | MOTOS     | Sexta-Feira    | false                 | R$ 1.595,00   |
+| 6    | YAMAHA          | YFZ 450/ YZ 450 F 449cc           | 2024          | MOTOS     | Quarta-Feira   | false                 | R$ 76.907,00  |
+| 7    | HARLEY-DAVIDSON | CVO BREAKOUT FXSBSE               | 2014          | MOTOS     | Quarta-Feira   | false                 | R$ 89.690,00  |
+| 8    | ZONTES          | T 310                             | 2024          | MOTOS     | Quarta-Feira   | false                 | R$ 29.061,00  |
+
 ## Cadastro de usuários
 
 O cadastro do usuário é realizado enviando uma requisição **POST** ao endpoint **/apiveiculos/v1/usuario/**, sendo que no corpo da requisição deve conter um **JSON** com as seguintes informações obrigatórias:
