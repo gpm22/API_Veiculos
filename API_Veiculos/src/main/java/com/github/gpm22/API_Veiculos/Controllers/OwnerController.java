@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Collections;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -57,6 +58,7 @@ public class OwnerController {
         logger.info("Iniciando cadastro do usuario: {}", owner);
         ownerService.validateNewOwnerInformation(owner);
         Owner newOwner = ownerService.saveOrUpdateOwner(owner);
+        newOwner.setVehicles(Collections.emptySet());
         logger.info("Cadastro realizado com sucesso do usuario: {}", newOwner);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
