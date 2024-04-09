@@ -45,11 +45,11 @@ public class OwnerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createOwner(@RequestBody Owner owner) {
+    public ResponseEntity<Owner> createOwner(@RequestBody Owner owner) {
         try {
             return createOwnerResponse(owner);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
                     "Erro durante cadastro do usuário:" + owner, logger);
         }
     }
@@ -74,12 +74,12 @@ public class OwnerController {
     }
 
     @PutMapping("/{email_ou_cpf}")
-    public ResponseEntity<?> updateOwner(@PathVariable(value = "email_ou_cpf") String emailOrCpf,
+    public ResponseEntity<Owner> updateOwner(@PathVariable(value = "email_ou_cpf") String emailOrCpf,
             @RequestBody Owner updatedOwner) {
         try {
             return updateOwnerResponse(emailOrCpf, updatedOwner);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
                     "Erro ao atualizar " + formatUserMessage(emailOrCpf), logger);
         }
     }
@@ -102,11 +102,11 @@ public class OwnerController {
     }
 
     @DeleteMapping("/{email_ou_cpf}")
-    public ResponseEntity<?> deleteOwner(@PathVariable(value = "email_ou_cpf") String emailOrCpf) {
+    public ResponseEntity<Owner> deleteOwner(@PathVariable(value = "email_ou_cpf") String emailOrCpf) {
         try {
             return deleteOwnerResponse(emailOrCpf);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
                     "Erro ao excluir o " + formatUserMessage(emailOrCpf), logger);
         }
     }
@@ -124,11 +124,11 @@ public class OwnerController {
     }
 
     @GetMapping("/{email_ou_cpf}")
-    public ResponseEntity<?> getOwner(@PathVariable(value = "email_ou_cpf") String emailOrCpf) {
+    public ResponseEntity<Owner> getOwner(@PathVariable(value = "email_ou_cpf") String emailOrCpf) {
         try {
             return getOwnerResponse(emailOrCpf);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.NOT_FOUND,
                     "Erro ao retornar " + formatUserMessage(emailOrCpf), logger);
         }
     }
@@ -154,12 +154,12 @@ public class OwnerController {
     }
 
     @PutMapping("/{email_ou_cpf}/registro-veiculo/{vehicle_id}")
-    public ResponseEntity<?> registerVehicle(@PathVariable(value = "email_ou_cpf") String emailOrCpf,
+    public ResponseEntity<Vehicle> registerVehicle(@PathVariable(value = "email_ou_cpf") String emailOrCpf,
             @PathVariable(value = "vehicle_id") long vehicleId) {
         try {
             return registerVehicleResponse(emailOrCpf, vehicleId);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
                     "Erro ao cadastrar veículo com id: " + vehicleId, logger);
         }
     }
@@ -190,7 +190,7 @@ public class OwnerController {
             String errorMessage = "Erro ao remover o veículo com id: "
                     + vehicleId + " do "
                     + formatUserMessage(emailOrCpf);
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, errorMessage, logger);
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, errorMessage, logger);
         }
     }
 

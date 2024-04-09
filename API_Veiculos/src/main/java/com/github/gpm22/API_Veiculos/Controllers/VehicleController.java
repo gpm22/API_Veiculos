@@ -43,11 +43,11 @@ public class VehicleController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getVehicles() {
+    public ResponseEntity<Collection<Vehicle>> getVehicles() {
         try {
             return getVehiclesResponse();
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
                     "Erro ao retornar todos os veículos", logger);
         }
     }
@@ -63,12 +63,12 @@ public class VehicleController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createVehicle(@RequestBody Vehicle vehicle) {
+    public ResponseEntity<Vehicle> createVehicle(@RequestBody Vehicle vehicle) {
         try {
             return createVehicleResponse(vehicle);
         } catch (IllegalArgumentException e) {
             String errorMessage = "Erro ao cadastrar veículo: " + vehicle;
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, errorMessage, logger);
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST, errorMessage, logger);
         }
     }
 
@@ -99,11 +99,11 @@ public class VehicleController {
     }
 
     @GetMapping("/{vehicle_id}")
-    public ResponseEntity<?> getVehicleById(@PathVariable(value = "vehicle_id") long vehicleId) {
+    public ResponseEntity<Vehicle> getVehicleById(@PathVariable(value = "vehicle_id") long vehicleId) {
         try {
             return getVehicleByIdResponse(vehicleId);
         } catch (IllegalArgumentException e) {
-            return ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
+            throw ResponseEntityBuilder.buildErrorResponse(e, HttpStatus.BAD_REQUEST,
                     "Erro ao retornar o veículo de id: " + vehicleId, logger);
         }
     }
