@@ -9,6 +9,4 @@ public interface OwnerRepository extends JpaRepository<Owner, Long> {
 
     Owner findByEmail(final String email);
 
-    Owner findByCpfOrEmail(final String cpf, final String email);
-
 }
