@@ -6,11 +6,12 @@ import org.springframework.http.ResponseEntity;
 
 public class ResponseEntityBuilder {
 
-    public static ResponseEntity<String> buildErrorResponse(Exception e, HttpStatus httpStatus, String errorMessage, Logger logger){
+    public static ResponseEntity<String> buildErrorResponse(Exception e, HttpStatus httpStatus, String errorMessage,
+            Logger logger) {
         logger.error(errorMessage);
         e.printStackTrace();
         return ResponseEntity
                 .status(httpStatus)
-                .body(e.getMessage());
+                .body("{\"error\": \"" + e.getMessage() + "\"}");
     }
 }
