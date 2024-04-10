@@ -8,6 +8,7 @@ Cliente para essa API em https://github.com/gpm22/API_Veiculos_Client.
 
 ## Tecnologias utilizadas
 
+* **Java 16**
 * **Spring initializr;**
   * Para inicializar o projeto;
 * **Spring Web;**
@@ -21,7 +22,7 @@ Cliente para essa API em https://github.com/gpm22/API_Veiculos_Client.
 
 ## Iniciando o Sistema
 
-Para usar essa API é necessário, além de ter um clone local do atual repositório, ter o **Gradle** instalado. Para instalar o **Gradle** é só seguir os passos apresentados em https://gradle.org/install/.
+Para usar essa API é necessário, além de ter um clone local do atual repositório, ter o Java 16 e o **Gradle** instalados. Para instalar o **Gradle** é só seguir os passos apresentados em https://gradle.org/install/.
 
 Após instalar o **Gradle**, é só rodar o seguinte comando através de um terminal/console na pasta do projeto:
 
